@@ -14,4 +14,4 @@
     android:padding="16dp"
     android:stretchMode="columnWidth"
     android:verticalSpacing="8dp"
-    tools:context="com.example.peter.popularmovies.MainDiscovery"></GridView>
+    tools:context="com.example.peter.popularmovies.MainDiscovery" />
