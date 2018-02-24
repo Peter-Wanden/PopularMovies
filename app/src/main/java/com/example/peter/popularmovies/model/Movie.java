@@ -18,4 +18,5 @@ public class Movie {
         mTitle = title;
         mImageUrl = imageUrl;
     }
+
 }
