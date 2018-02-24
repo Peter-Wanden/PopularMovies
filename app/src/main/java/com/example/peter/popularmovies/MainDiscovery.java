@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.peter.popularmovies.model.Movie;
+import com.example.peter.popularmovies.utils.TmdbApiUrlUtils;
+
 import java.util.List;
 
 public class MainDiscovery extends AppCompatActivity
@@ -96,15 +98,19 @@ public class MainDiscovery extends AppCompatActivity
 
     @Override
     public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-        Uri baseUri = Uri.parse(BASE_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        uriBuilder.appendPath(PATH_DISCOVER);
-        uriBuilder.appendPath(PATH_MOVIE);
-        uriBuilder.appendQueryParameter("api_key", API_KEY);
-        uriBuilder.appendQueryParameter("sort_by", MOST_POPULAR);
+//        Uri baseUri = Uri.parse(BASE_URL);
+//        Uri.Builder uriBuilder = baseUri.buildUpon();
+//
+//        uriBuilder.appendPath(PATH_DISCOVER);
+//        uriBuilder.appendPath(PATH_MOVIE);
+//        uriBuilder.appendQueryParameter("api_key", API_KEY);
+//        uriBuilder.appendQueryParameter("sort_by", MOST_POPULAR);
 
-        Log.i(LOG_TAG, "URL is: " + uriBuilder.toString());
+
+        Uri uri = TmdbApiUrlUtils.returnUri(2);
+
+        Log.i(LOG_TAG, "URL is: " + uri.toString());
 
         return null;
     }
@@ -116,7 +122,7 @@ public class MainDiscovery extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Movie>> loader) {
-
+        // TODO - Why is this not working?? mPosterAdapter.clear();
     }
 
     /**

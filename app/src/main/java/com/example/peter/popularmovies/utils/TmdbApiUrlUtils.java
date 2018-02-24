@@ -45,10 +45,12 @@ public class TmdbApiUrlUtils {
     // Sort by params
     private static final String VOTE_AVERAGE_DESCENDING = "vote_average.desc";
 
-    // Path to highest rated (append to DISCOVER)
-    private static final String RATED = "&certification_country=US&certification=R&sort_by=vote_average.desc";
+    // There is no need for this class to be instantiated
+    public TmdbApiUrlUtils() {
+    }
 
-    public Uri TmdbApiUrlUtils(int userSearch) {
+    // This method
+    public static Uri returnUri(int userSearch) {
 
         Uri baseUri = Uri.parse(BASE_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
