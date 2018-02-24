@@ -43,6 +43,7 @@ public class MainDiscovery extends AppCompatActivity
     // Path to highest rated (append to DISCOVER)
     private static final String HIGHEST_RATED = "&certification_country=US&certification=R&sort_by=vote_average.desc";
 
+
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
 

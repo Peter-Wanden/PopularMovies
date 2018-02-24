@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by peter on 22/02/2018.
  * Utility class with methods to help perform the HTTP request and parse the JSON response
+ * TODO remove networking operations from this class into their own class
  */
 
 public final class JsonUtils {
