@@ -9,9 +9,17 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
+import com.example.peter.popularmovies.model.Movie;
+import com.example.peter.popularmovies.utils.MovieLoader;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Created by peter on 23/02/2018.
- * {@link PosterAdapter} exposes a list of Movie posters from an  TODO ArrayList
+ * {@link PosterAdapter} exposes a list of Movie posters from an ArrayList
  * to an {@link android.support.v7.widget.RecyclerView}.
  */
 
@@ -20,14 +28,17 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     /* Log tag for this class */
     private static final String LOG_TAG = PosterAdapter.class.getSimpleName();
 
-    /* The context we use to utility methods, app resources and layout inflaters */
+    /* The context we use to reach utility methods, app resources and layout inflaters */
     private final Context mContext;
+
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
      * our RecyclerView
      */
     final private PosterAdapterOnClickHandler mClickHandler;
-    int mNumberItems;
+    // The number of items in the data set.
+    private int mNumberItems;
+    private ArrayList mMovies;
 
     /**
      * Constructor for PosterAdapter that accepts a number of items to display and the specification
@@ -36,9 +47,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * @param context  Used to talk to the UI and app resources
      * @param listener Listener for list item clicks
      */
-    public PosterAdapter(Context context, PosterAdapterOnClickHandler listener) {
+    public PosterAdapter(Context context, ArrayList movies, PosterAdapterOnClickHandler listener) {
         mContext = context;
         mClickHandler = listener;
+        mMovies = movies;
     }
 
     /**
@@ -70,17 +82,23 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * indices in the list for this particular position, using the "position" argument that is
      * conveniently passed into us.
      *
-     * @param holder   The ViewHolder which should be updated to represent the contents of the
-     *                 item at the given position in the data set.
+     * @param posterAdapterViewHolder   The ViewHolder which should be updated to represent the
+     *                                  contents of the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(PosterAdapterViewHolder posterAdapterViewHolder, int position) {
+
+        Movie currentMovie = (Movie) mMovies.get(position);
+
+        Log.i(LOG_TAG, "Current movie is: " + currentMovie.getTitle());
 
         // Log position for now.
         Log.d(LOG_TAG, "Position #: " + position);
 
-
+        Picasso.with(mContext)
+                .load(currentMovie.getMoviePosterUrl())
+                .into(posterAdapterViewHolder.listItemImageView);
     }
 
     /**
@@ -91,7 +109,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        if (null == mMovies) return 0;
+        return mMovies.size();
     }
 
     /**

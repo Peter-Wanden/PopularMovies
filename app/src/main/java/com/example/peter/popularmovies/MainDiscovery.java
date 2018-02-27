@@ -3,56 +3,40 @@ package com.example.peter.popularmovies;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 
 import com.example.peter.popularmovies.model.Movie;
-import com.example.peter.popularmovies.utils.TmdbApiUrlUtils;
+import com.example.peter.popularmovies.utils.MovieLoader;
+import com.example.peter.popularmovies.utils.NetworkUtils;
 
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.peter.popularmovies.utils.NetworkUtils.MOST_POPULAR;
+
 public class MainDiscovery extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<List<Movie>>, PosterAdapter.PosterAdapterOnClickHandler {
+        implements LoaderCallbacks<ArrayList<Movie>>, PosterAdapter.PosterAdapterOnClickHandler {
 
     // Log tag for this class
     private static final String LOG_TAG = MainDiscovery.class.getSimpleName();
 
-    // API Key TODO - Make this key a user input under preferences
-    private static final String API_KEY = "dc92a2a6c5b67810baa769bdd918b776";
-
-    // Base URL to latest version (3) of the API
-    private static final String BASE_URL = "https://api.themoviedb.org/3";
-
-    // Base URL for poster images with the image size appended
-    private static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
-
-    // Path 'discover' in API
-    private static final String PATH_DISCOVER = "discover";
-
-    // Path 'movie' in API
-    private static final String PATH_MOVIE = "movie";
-
-    // Path to most popular (append to DISCOVER)
-    private static final String MOST_POPULAR = "popularity.desc";
-
-    // Path to highest rated (append to DISCOVER)
-    private static final String HIGHEST_RATED = "&certification_country=US&certification=R&sort_by=vote_average.desc";
-
-
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
 
-    // Adapter & recycler
+    // Adapter
     private PosterAdapter mPosterAdapter;
+    // RecyclerView
     private RecyclerView mRecyclerView;
-
+    // DataSource
+    private ArrayList<Movie> mMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +54,7 @@ public class MainDiscovery extends AppCompatActivity
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         // Create a new adapter that takes an empty list of movie posters as input
-        mPosterAdapter = new PosterAdapter(this, this);
+        mPosterAdapter = new PosterAdapter(this, mMovies, this);
 
         // Setting the adapter attaches it to the RecyclerView in our layout.
         mRecyclerView.setAdapter(mPosterAdapter);
@@ -88,7 +72,7 @@ public class MainDiscovery extends AppCompatActivity
         * the last created loader is re-used.
         */
         if (networkInfo != null && networkInfo.isConnected()) {
-            getSupportLoaderManager().initLoader(POSTER_LOADER_ID, null, this);
+            getLoaderManager().initLoader(POSTER_LOADER_ID, null, this);
 
         } else {
             // Otherwise, log error TODO - handle this better, see quake report
@@ -96,33 +80,48 @@ public class MainDiscovery extends AppCompatActivity
         }
     }
 
+    /**
+     * Instantiates and returns a new loader for given loaderId
+     *
+     * @param loaderId - A unique integer that identifies the loader.
+     * @param bundle   - additional data
+     * @return
+     */
     @Override
-    public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<ArrayList<Movie>> onCreateLoader(int loaderId, Bundle bundle) {
 
-//        Uri baseUri = Uri.parse(BASE_URL);
-//        Uri.Builder uriBuilder = baseUri.buildUpon();
-//
-//        uriBuilder.appendPath(PATH_DISCOVER);
-//        uriBuilder.appendPath(PATH_MOVIE);
-//        uriBuilder.appendQueryParameter("api_key", API_KEY);
-//        uriBuilder.appendQueryParameter("sort_by", MOST_POPULAR);
-
-
-        Uri uri = TmdbApiUrlUtils.returnUri(2);
-
-        Log.i(LOG_TAG, "URL is: " + uri.toString());
-
-        return null;
+        return new MovieLoader(this, NetworkUtils.MOST_POPULAR);
     }
 
+    /**
+     * Called when a previously created loader has finished its load
+     *
+     * @param loaderId - The loader id. In this case POSTER_LOADER_ID
+     * @param movies - A list of Movie objects returned from the onCreateLoader method.
+     */
     @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movies) {
+    public void onLoadFinished(Loader<ArrayList<Movie>> loaderId, ArrayList<Movie> movies) {
+        if (movies != null && !movies.isEmpty()) {
+            mMovies = movies;
 
+            Log.i(LOG_TAG, "Number of movies = " + mMovies.size());
+
+            // We have Movie objects returned from onCreateLoader
+            mPosterAdapter.notifyDataSetChanged();
+
+        } else {
+            Log.i(LOG_TAG, "No data returned in onLoadFinished");
+        }
     }
 
+    /**
+     * Called when a previously created loader is being reset, thus making its data unavailable.
+     * @param loader
+     */
+
     @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
-        // TODO - Why is this not working?? mPosterAdapter.clear();
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+        mPosterAdapter = null;
     }
 
     /**

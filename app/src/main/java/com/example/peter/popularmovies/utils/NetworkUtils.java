@@ -1,0 +1,155 @@
+package com.example.peter.popularmovies.utils;
+
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Scanner;
+
+/**
+ * Created by peter on 24/02/2018.
+ * This class constructs URL's that query 'The Movie Database' API.
+ * It returns URL's that for most popular and highest rated movies
+ * as well as an image URL pointing to the movie poster.
+ */
+
+public final class NetworkUtils {
+
+    /* URL search type for most popular */
+    public static final int MOST_POPULAR = 0;
+    /* URL search type for highest rated */
+    public static final int HIGHEST_RATED = 1;
+    /* Log tag for this class */
+    private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
+    /* API key Key pair identifier. */
+    private static final String API_KEY = "api_key";
+
+    /* API Key */
+    private static final String API_KEY_VALUE = "dc92a2a6c5b67810baa769bdd918b776";
+
+    /* Base URL for a search. */
+    private static final String BASE_SEARCH_URL = "https://api.themoviedb.org/3";
+
+    /* Path to 'discover' feature in API */
+    private static final String PATH_DISCOVER = "discover";
+
+    /* Path 'movie' in API */
+    private static final String PATH_MOVIE = "movie";
+
+    /* Tells the API that we would like to sort the results */
+    private static final String SORT_BY = "sort_by";
+
+    /* Sort criteria for most popular */
+    private static final String POPULARITY = "POPULARITY.desc";
+
+    /* Highest rated */
+    private static final String RATING = "vote_average.desc";
+
+    /* Base URL for poster images */
+    private static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
+
+    /* Specifies the size of the image to return. */
+    private static final String IMAGE_SIZE = "w185";
+
+    /**
+     * Create a private constructor because no one should ever create a {@link NetworkUtils}
+     * object. This class is only meant to hold static variables and methods, which can be accessed
+     * directly from the class name TmdbApiUtils (an object instance of QueryUtils is not needed).
+     */
+    private NetworkUtils() {
+    }
+
+    /**
+     * This method constructs and returns a URL that will search by 'POPULARITY' or 'RATING'
+     * depending on the args sent to it.
+     *
+     * @param searchType - Defines the type of search URL to build.
+     * @return - A URL converted to a String.
+     */
+    public static URL getMovieSearchUrl(int searchType) {
+
+        Uri.Builder searchUri = Uri.parse(BASE_SEARCH_URL).buildUpon()
+                .appendPath(PATH_DISCOVER)
+                .appendPath(PATH_MOVIE);
+
+        switch (searchType) {
+            case MOST_POPULAR:
+                searchUri.appendQueryParameter(SORT_BY, POPULARITY);
+                break;
+
+            case HIGHEST_RATED:
+                searchUri.appendQueryParameter(SORT_BY, RATING);
+                break;
+
+            default:
+                throw new IllegalArgumentException(LOG_TAG
+                        + "Search criteria not supported for search type: "
+                        + searchType);
+        }
+        // Append the API key, and return the completed search URL as a String.
+        searchUri.appendQueryParameter(API_KEY, API_KEY_VALUE).build();
+
+        try {
+            URL searchUrl = new URL(searchUri.toString());
+            return searchUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Constructs and returns a URL that will return a specified image from the server
+     *
+     * @param posterPath - The path to the poster image for the requested movie.
+     * @return - A complete Url that returns a poster image of the correct size.
+     */
+    public static URL getMoviePosterUrl(String posterPath) {
+
+        //Build the Uri
+        Uri.Builder moviePosterUri = Uri.parse(BASE_IMAGE_URL).buildUpon()
+                .appendPath(IMAGE_SIZE)
+                .appendPath(posterPath);
+
+        try {
+            URL imageUrl = new URL(moviePosterUri.toString());
+            Log.v(LOG_TAG, "Image URL: " + imageUrl);
+            return imageUrl;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * This method returns the entire result from the HTTP response.
+     *
+     * @param url The URL to fetch the HTTP response from.
+     * @return The contents of the HTTP response, null if no response
+     * @throws IOException Related to network and stream reading
+     */
+    public static String getResponseFromHttpUrl(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            InputStream in = urlConnection.getInputStream();
+
+            Scanner scanner = new Scanner(in);
+            scanner.useDelimiter("\\A");
+
+            boolean hasInput = scanner.hasNext();
+            String response = null;
+            if (hasInput) {
+                response = scanner.next();
+            }
+            scanner.close();
+            return response;
+        } finally {
+            urlConnection.disconnect();
+        }
+    }
+}

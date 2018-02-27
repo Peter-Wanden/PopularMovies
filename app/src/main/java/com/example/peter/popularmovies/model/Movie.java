@@ -8,15 +8,30 @@ package com.example.peter.popularmovies.model;
 public class Movie {
 
     // Title of the movie
-    public final String mTitle;
+    private String mTitle;
 
     // Image URL
-    public final String mImageUrl;
+    private String mPosterUrl;
 
-    // Constructor
-    public Movie(String title, String imageUrl) {
+    /**
+     * Constructor for a Movie object
+     *
+     * @param title     - The title of the movie
+     * @param posterURL The endpoint of the poster location. This needs to be completed
+     *                  before it can point to the server
+     */
+    public Movie(String title, String posterURL) {
         mTitle = title;
-        mImageUrl = imageUrl;
+        mPosterUrl = posterURL;
     }
 
+    /* Returns the movie title */
+    public String getTitle() {
+        return mTitle;
+    }
+
+    /* Returns the movie poster image Url */
+    public String getMoviePosterUrl() {
+        return mPosterUrl;
+    }
 }
