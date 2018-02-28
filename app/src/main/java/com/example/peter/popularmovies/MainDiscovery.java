@@ -9,10 +9,12 @@ import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.peter.popularmovies.model.Movie;
+import com.example.peter.popularmovies.utils.JsonUtils;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
 
@@ -48,17 +50,22 @@ public class MainDiscovery extends AppCompatActivity
 
         // GridLayoutManager is responsible for measuring and positioning item views within a
         // RecyclerView into a grid layout.
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         // Set the layout manager onto our RecyclerView
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
-        // Create a new adapter that takes an empty list of movie posters as input
+        mRecyclerView.setHasFixedSize(true);
+        mMovies = new ArrayList<>();
+
+        // Create a new adapter that takes an empty list of Movie objects as input
         mPosterAdapter = new PosterAdapter(this, mMovies, this);
 
         // Setting the adapter attaches it to the RecyclerView in our layout.
         mRecyclerView.setAdapter(mPosterAdapter);
 
+
+        // TODO move networking to Network Utils
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -90,7 +97,8 @@ public class MainDiscovery extends AppCompatActivity
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int loaderId, Bundle bundle) {
 
-        return new MovieLoader(this, NetworkUtils.MOST_POPULAR);
+        // On a background thread return an ArrayList of movies
+        return new MovieLoader(this, 1);
     }
 
     /**
@@ -101,14 +109,12 @@ public class MainDiscovery extends AppCompatActivity
      */
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loaderId, ArrayList<Movie> movies) {
+
         if (movies != null && !movies.isEmpty()) {
-            mMovies = movies;
-
-            Log.i(LOG_TAG, "Number of movies = " + mMovies.size());
-
-            // We have Movie objects returned from onCreateLoader
+            // Update the data source in the adapter
+            mPosterAdapter.updateMovies(movies);
+            // Tell the adapter it has new data
             mPosterAdapter.notifyDataSetChanged();
-
         } else {
             Log.i(LOG_TAG, "No data returned in onLoadFinished");
         }
@@ -118,7 +124,6 @@ public class MainDiscovery extends AppCompatActivity
      * Called when a previously created loader is being reset, thus making its data unavailable.
      * @param loader
      */
-
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
         mPosterAdapter = null;

@@ -1,5 +1,7 @@
 package com.example.peter.popularmovies.model;
 
+import java.net.URL;
+
 /**
  * Created by peter on 23/02/2018.
  * This class holds a movie object
@@ -11,7 +13,7 @@ public class Movie {
     private String mTitle;
 
     // Image URL
-    private String mPosterUrl;
+    private URL mPosterUrl;
 
     /**
      * Constructor for a Movie object
@@ -20,7 +22,7 @@ public class Movie {
      * @param posterURL The endpoint of the poster location. This needs to be completed
      *                  before it can point to the server
      */
-    public Movie(String title, String posterURL) {
+    public Movie(String title, URL posterURL) {
         mTitle = title;
         mPosterUrl = posterURL;
     }
@@ -31,7 +33,7 @@ public class Movie {
     }
 
     /* Returns the movie poster image Url */
-    public String getMoviePosterUrl() {
+    public URL getMoviePosterUrl() {
         return mPosterUrl;
     }
 }

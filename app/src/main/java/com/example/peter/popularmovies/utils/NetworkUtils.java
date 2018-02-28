@@ -1,9 +1,7 @@
 package com.example.peter.popularmovies.utils;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,9 +11,12 @@ import java.util.Scanner;
 
 /**
  * Created by peter on 24/02/2018.
- * This class constructs URL's that query 'The Movie Database' API.
- * It returns URL's that for most popular and highest rated movies
- * as well as an image URL pointing to the movie poster.
+ * This class constructs a URL and then queries 'The Movie Database' API.
+ * Each URL returns a list of either the most popular or highest rated movies.
+ * Each result is accompanied by an image URL pointing to its corresponding movie poster.
+ *
+ * TODO - Limit the search results to a reasonable amount
+ *
  */
 
 public final class NetworkUtils {
@@ -35,10 +36,22 @@ public final class NetworkUtils {
     /* Base URL for a search. */
     private static final String BASE_SEARCH_URL = "https://api.themoviedb.org/3";
 
-    /* Path to 'discover' feature in API */
+    /* There are three ways (paths) to search and find what you want on TMDB.
+        /search   - a text based search
+        /discover - search based on filters or definable values like ratings, certifications
+                    or release dates.
+        /find     - using external id's such as using the IMDB ID of a movie
+
+        For this application we only need to use the discover path
+    */
     private static final String PATH_DISCOVER = "discover";
 
-    /* Path 'movie' in API */
+    /* There are two further paths in under discover.
+        /movie  - for movie information
+        /tv     - for TV information
+
+        For this application we only need the path to movies
+     */
     private static final String PATH_MOVIE = "movie";
 
     /* Tells the API that we would like to sort the results */
@@ -47,7 +60,7 @@ public final class NetworkUtils {
     /* Sort criteria for most popular */
     private static final String POPULARITY = "POPULARITY.desc";
 
-    /* Highest rated */
+    /* Sort criteria for highest rated */
     private static final String RATING = "vote_average.desc";
 
     /* Base URL for poster images */
@@ -95,8 +108,7 @@ public final class NetworkUtils {
         searchUri.appendQueryParameter(API_KEY, API_KEY_VALUE).build();
 
         try {
-            URL searchUrl = new URL(searchUri.toString());
-            return searchUrl;
+            return new URL(searchUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;
@@ -114,12 +126,10 @@ public final class NetworkUtils {
         //Build the Uri
         Uri.Builder moviePosterUri = Uri.parse(BASE_IMAGE_URL).buildUpon()
                 .appendPath(IMAGE_SIZE)
-                .appendPath(posterPath);
+                .appendEncodedPath(posterPath);
 
         try {
-            URL imageUrl = new URL(moviePosterUri.toString());
-            Log.v(LOG_TAG, "Image URL: " + imageUrl);
-            return imageUrl;
+            return new URL(moviePosterUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

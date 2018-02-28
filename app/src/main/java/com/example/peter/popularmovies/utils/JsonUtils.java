@@ -6,27 +6,20 @@ import com.example.peter.popularmovies.model.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
  * Created by peter on 22/02/2018.
- * Utility class with methods to help perform the HTTP request and parse the JSON response
- * TODO remove networking operations from this class into their own class
+ * Utility class with methods to perform the HTTP request and parse the JSON response
  */
 
 public final class JsonUtils {
 
     // Log tag for this class
-    public static final String LOG_TAG = JsonUtils.class.getSimpleName();
+    private static final String LOG_TAG = JsonUtils.class.getSimpleName();
 
     /**
      * Query the TMDb server and return a list of Movie objects based on user preferences
@@ -44,11 +37,8 @@ public final class JsonUtils {
             e.printStackTrace();
         }
 
-        // Extract relevant fields from the response and create a list of {@link Movie} objects
-        ArrayList<Movie> movies = (ArrayList<Movie>) extractFeatureFromJson(jsonResponse);
-
         // Return the list of {@link Movie} objects
-        return movies;
+        return extractFeatureFromJson(jsonResponse);
     }
 
     private static ArrayList<Movie> extractFeatureFromJson(String movieJson) {
@@ -71,7 +61,7 @@ public final class JsonUtils {
             JSONArray resultsArray = baseJsonResponse.getJSONArray("results");
 
             // Iterate through the array extracting the movie objects and assign their values
-            // to Movie objects
+            // to new Movie objects
             for (int i = 0; i < resultsArray.length(); i++) {
 
                 // Get a single movie object at position 'i'
@@ -80,11 +70,12 @@ public final class JsonUtils {
                 // Extract the movie title
                 String movieTitle = currentMovie.optString("title");
 
-                // Extract the poster path
+                // Extract the poster path and build the URL for the image
                 String posterPath = currentMovie.optString("poster_path");
+                URL posterUrl = NetworkUtils.getMoviePosterUrl(posterPath);
 
                 // Create a new Movie object and pass in the required fields
-                Movie movie = new Movie(movieTitle, posterPath);
+                Movie movie = new Movie(movieTitle, posterUrl);
 
                 // Add the new movie to the list of movies
                 movies.add(movie);

@@ -6,16 +6,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.peter.popularmovies.model.Movie;
-import com.example.peter.popularmovies.utils.MovieLoader;
+import com.example.peter.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Created by peter on 23/02/2018.
@@ -38,7 +37,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     final private PosterAdapterOnClickHandler mClickHandler;
     // The number of items in the data set.
     private int mNumberItems;
-    private ArrayList mMovies;
+    private ArrayList<Movie> mMovies; // ArrayList<Movie> mMovies ???
 
     /**
      * Constructor for PosterAdapter that accepts a number of items to display and the specification
@@ -68,9 +67,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     public PosterAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         int layoutIdForListItem = R.layout.poster_item_view;
-
-        View view = LayoutInflater.from(mContext).inflate(layoutIdForListItem, viewGroup, false);
-
+        View view = LayoutInflater
+                .from(mContext)
+                .inflate(layoutIdForListItem, viewGroup, false);
         view.setFocusable(true);
 
         return new PosterAdapterViewHolder(view);
@@ -89,15 +88,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(PosterAdapterViewHolder posterAdapterViewHolder, int position) {
 
-        Movie currentMovie = (Movie) mMovies.get(position);
+        Movie currentMovie = mMovies.get(position);
 
-        Log.i(LOG_TAG, "Current movie is: " + currentMovie.getTitle());
-
-        // Log position for now.
-        Log.d(LOG_TAG, "Position #: " + position);
+//        posterAdapterViewHolder
+//                .movieTitle
+//                .setText(currentMovie.getTitle());
 
         Picasso.with(mContext)
-                .load(currentMovie.getMoviePosterUrl())
+                .load(currentMovie.getMoviePosterUrl().toString())
                 .into(posterAdapterViewHolder.listItemImageView);
     }
 
@@ -110,7 +108,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public int getItemCount() {
         if (null == mMovies) return 0;
-        return mMovies.size();
+        mNumberItems = mMovies.size();
+        return mNumberItems;
+    }
+
+    public void updateMovies(ArrayList<Movie> movies) {
+        mMovies.clear();
+        mMovies.addAll(movies);
     }
 
     /**
@@ -131,6 +135,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         // Displays a movie poster image
         ImageView listItemImageView;
 
+        // Displays the movie title
+        TextView movieTitle;
+
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
          * ImageView and set an onClickListener to listen for clicks, which will be handled in the
@@ -144,6 +151,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
             // Get a reference to the ImageView
             listItemImageView = itemView.findViewById(R.id.poster_iv);
+
+            // Get a reference to the TextView
+//            movieTitle = itemView.findViewById(R.id.movie_title_tv);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
             itemView.setOnClickListener(this);

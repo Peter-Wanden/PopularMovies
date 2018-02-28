@@ -1,27 +1,31 @@
 package com.example.peter.popularmovies.utils;
 
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-
 import com.example.peter.popularmovies.model.Movie;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 
 /**
- * Created by peter on 26/02/2018.
- * Returns a list of Movie objects using an AsyncTask to perform the network request to the
- * given URL
+ * Created by peter on 28/02/2018.
+ * Loads a list of movies by using an AsyncTask to perform the
+ * network request to the given URL.
  */
 
 public class MovieLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
-    /* Query URL */
-    private int mSearchType;
+    private int mMovieSearchType;
 
-    public MovieLoader(Context context, int searchType) {
+    /**
+     * Constructs a new {@link MovieLoader}
+     *
+     * @param context
+     * @param movieSearchType - The type of search requested.
+     */
+    public MovieLoader(Context context, int movieSearchType) {
         super(context);
-        mSearchType = searchType;
+        mMovieSearchType = movieSearchType;
     }
 
     @Override
@@ -29,9 +33,14 @@ public class MovieLoader extends AsyncTaskLoader<ArrayList<Movie>> {
         forceLoad();
     }
 
+    /**
+     * This is done on a background thread.
+     * @return - A list of Movie objects
+     */
     @Override
     public ArrayList<Movie> loadInBackground() {
-        // Perform the network request, parse the response and extract the list of Movie objects
-        return JsonUtils.getMovieData(mSearchType);
+
+        // Perform the network request, parse the response, and extract a list of Movies.
+        return JsonUtils.getMovieData(mMovieSearchType);
     }
 }
