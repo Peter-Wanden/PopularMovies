@@ -29,10 +29,13 @@ public final class NetworkUtils {
 
     /* URL search type for most popular */
     public static final int MOST_POPULAR = 0;
+
     /* URL search type for highest rated */
     public static final int HIGHEST_RATED = 1;
+
     /* Log tag for this class */
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
+
     /* API key Key pair identifier. */
     private static final String API_KEY = "api_key";
 
@@ -127,8 +130,10 @@ public final class NetworkUtils {
                 break;
 
             default:
-                throw new IllegalArgumentException(LOG_TAG
-                        + "Search criteria not supported for search type: "
+                // An incorrect argument should not crash the app. Instead return MOST_POPULAR
+                searchUri.appendQueryParameter(SORT_BY, POPULARITY);
+                // Log the error
+                Log.e(LOG_TAG, "Search criteria not supported for search type: "
                         + searchType);
         }
         // Append the API key, and return the completed search URL as a String.

@@ -1,6 +1,7 @@
 package com.example.peter.popularmovies;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
@@ -26,10 +30,6 @@ public class MainDiscovery extends AppCompatActivity
 
     // Adapter
     private PosterAdapter mPosterAdapter;
-    // RecyclerView
-    private RecyclerView mRecyclerView;
-    // DataSource
-    private ArrayList<Movie> mMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +37,12 @@ public class MainDiscovery extends AppCompatActivity
         setContentView(R.layout.activity_main_discovery);
 
         /* Get a reference to the recycler view */
-        mRecyclerView = findViewById(R.id.posters_rv);
+        RecyclerView mRecyclerView = findViewById(R.id.posters_rv);
 
         /* GridLayoutManager is responsible for measuring and positioning item views within a
          * RecyclerView into a grid layout.
          */
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
 
         /* Connect the layout manager to the RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
@@ -53,7 +53,7 @@ public class MainDiscovery extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         /* Instantiate the data source for the adapter */
-        mMovies = new ArrayList<>();
+        ArrayList<Movie> mMovies = new ArrayList<>();
 
         /* Create a new adapter that takes an empty list of Movie objects */
         mPosterAdapter = new PosterAdapter(this, mMovies, this);
@@ -61,11 +61,10 @@ public class MainDiscovery extends AppCompatActivity
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        /*
-        * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
-        * created and (if the activity/fragment is currently started) starts the loader. Otherwise
-        * the last created loader is re-used.
-        */
+        /* Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
         if (NetworkUtils.getNetworkStatus(this)) {
             getLoaderManager().initLoader(POSTER_LOADER_ID, null, this);
 
@@ -86,7 +85,7 @@ public class MainDiscovery extends AppCompatActivity
     public Loader<ArrayList<Movie>> onCreateLoader(int loaderId, Bundle bundle) {
 
         // On a background thread return an ArrayList of movies
-        return new MovieLoader(this, 1);
+        return new MovieLoader(this, 0);
     }
 
     /**
@@ -124,6 +123,22 @@ public class MainDiscovery extends AppCompatActivity
      */
     @Override
     public void onClick(int clickedItemIndex) {
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

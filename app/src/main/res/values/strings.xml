@@ -1,3 +1,26 @@
 <resources>
+    <!-- Title for the application. [CHAR LIMIT=12] -->
     <string name="app_name">PopularMovies</string>
+
+    <!-- Settings Activity Title [CHAR LIMIT=NONE] -->
+    <string name="settings_title">Popular Movie Settings</string>
+
+    <!-- Settings Menu Item [CHAR LIMIT=NONE] -->
+    <string name="settings_menu_item">Settings</string>
+
+    <!-- Strings for Order-By preference [CHAR LIMIT=30] -->
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">order_by</string>
+    <!-- Default setting for Order-By preference -->
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_most_popular_value</string>
+
+    <!-- Label for order-by most popular option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_most_popular_label">Most Popular</string>
+    <string name="settings_order_by_most_popular_value" translatable="false">mostPopular</string>
+
+    <!-- Label for order-by highest rated option [CHAR LIMIT=20] -->
+    <string name="settings_order_by_highest_rated_label">Highest Rated</string>
+    <string name="settings_order_by_highest_rated_value" translatable="false">highestRated</string>
+
+
 </resources>
