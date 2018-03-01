@@ -1,7 +1,13 @@
 package com.example.peter.popularmovies.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.peter.popularmovies.MainDiscovery;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -75,6 +81,27 @@ public final class NetworkUtils {
      * directly from the class name TmdbApiUtils (an object instance of QueryUtils is not needed).
      */
     private NetworkUtils() {
+    }
+
+    /**
+     * Checks for network connectivity.
+     *
+     * @param context - Context of the class requesting connectivity.
+     * @return - true for access.
+     */
+    public static boolean getNetworkStatus(Context context) {
+
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(MainDiscovery.CONNECTIVITY_SERVICE);
+
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = null;
+        if (connMgr != null) {
+            networkInfo = connMgr.getActiveNetworkInfo();
+        }
+        // If there is an active network return true, else return false
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     /**

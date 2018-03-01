@@ -1,9 +1,5 @@
 package com.example.peter.popularmovies;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -12,17 +8,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
 import com.example.peter.popularmovies.model.Movie;
-import com.example.peter.popularmovies.utils.JsonUtils;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.example.peter.popularmovies.utils.NetworkUtils.MOST_POPULAR;
 
 public class MainDiscovery extends AppCompatActivity
         implements LoaderCallbacks<ArrayList<Movie>>, PosterAdapter.PosterAdapterOnClickHandler {
@@ -64,35 +55,26 @@ public class MainDiscovery extends AppCompatActivity
         // Setting the adapter attaches it to the RecyclerView in our layout.
         mRecyclerView.setAdapter(mPosterAdapter);
 
-
-        // TODO move networking to Network Utils
-        // Get a reference to the ConnectivityManager to check state of network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Get details on the currently active default data network
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
         /*
         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
         * the last created loader is re-used.
         */
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (NetworkUtils.getNetworkStatus(this)) {
             getLoaderManager().initLoader(POSTER_LOADER_ID, null, this);
 
         } else {
-            // Otherwise, log error TODO - handle this better, see quake report
+            // Otherwise, log error
             Log.e(LOG_TAG, "Network connection error");
         }
     }
 
     /**
-     * Instantiates and returns a new loader for given loaderId
+     * Instantiates and returns a new loader for the given loaderId
      *
      * @param loaderId - A unique integer that identifies the loader.
-     * @param bundle   - additional data
-     * @return
+     * @param bundle   - additional data.
+     * @return         - to onLoadFinished an ArrayList of Movie objects.
      */
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int loaderId, Bundle bundle) {
@@ -122,7 +104,7 @@ public class MainDiscovery extends AppCompatActivity
 
     /**
      * Called when a previously created loader is being reset, thus making its data unavailable.
-     * @param loader
+     * @param loader - The ID of the loader to reset.
      */
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
