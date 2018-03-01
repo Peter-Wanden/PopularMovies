@@ -107,7 +107,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
     public void updateMovies(ArrayList<Movie> movies) {
         mMovies.clear();
-        mMovies.addAll(movies);
+        if (movies != null && !movies.isEmpty()) {
+            mMovies.addAll(movies);
+        }
     }
 
     /**

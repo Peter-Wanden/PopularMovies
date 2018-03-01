@@ -8,17 +8,13 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
-
 import java.util.ArrayList;
 
 
@@ -51,6 +47,7 @@ public class MainDiscovery extends AppCompatActivity implements
          * RecyclerView into a grid layout.
          */
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
 
         /* Connect the layout manager to the RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
@@ -88,7 +85,7 @@ public class MainDiscovery extends AppCompatActivity implements
             // Clear the ListView as a new query will be kicked off
             mMovies.clear();
 
-            // Restart the loader to requery the USGS as the query settings have been updated
+            // Restart the loader to requery the server as the query settings have been updated
             getLoaderManager().restartLoader(POSTER_LOADER_ID, null, this);
         }
     }
@@ -139,7 +136,8 @@ public class MainDiscovery extends AppCompatActivity implements
      */
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-        mPosterAdapter = null;
+        mMovies.clear();
+        mPosterAdapter.updateMovies(mMovies);
     }
 
     /**
