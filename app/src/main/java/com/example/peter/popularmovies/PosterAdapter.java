@@ -2,18 +2,12 @@ package com.example.peter.popularmovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.peter.popularmovies.model.Movie;
-import com.example.peter.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
-
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -35,18 +29,20 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * our RecyclerView
      */
     final private PosterAdapterOnClickHandler mClickHandler;
-    // The number of items in the data set.
-    private int mNumberItems;
-    private ArrayList<Movie> mMovies; // ArrayList<Movie> mMovies ???
+
+    /* Instantiate an ArrayList of Movies as the data source */
+    private ArrayList<Movie> mMovies;
 
     /**
      * Constructor for PosterAdapter that accepts a number of items to display and the specification
      * for the PosterAdapterOnClickHandler.
      *
-     * @param context  Used to talk to the UI and app resources
+     * @param context Used to talk to the UI and app resources
+     * @param movies The data source
      * @param listener Listener for list item clicks
      */
-    public PosterAdapter(Context context, ArrayList movies, PosterAdapterOnClickHandler listener) {
+    public PosterAdapter(Context context, ArrayList<Movie> movies,
+                         PosterAdapterOnClickHandler listener) {
         mContext = context;
         mClickHandler = listener;
         mMovies = movies;
@@ -70,6 +66,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         View view = LayoutInflater
                 .from(mContext)
                 .inflate(layoutIdForListItem, viewGroup, false);
+
         view.setFocusable(true);
 
         return new PosterAdapterViewHolder(view);
@@ -88,12 +85,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(PosterAdapterViewHolder posterAdapterViewHolder, int position) {
 
+        // Get the current Movie object
         Movie currentMovie = mMovies.get(position);
 
-//        posterAdapterViewHolder
-//                .movieTitle
-//                .setText(currentMovie.getTitle());
-
+        // Display the movies poster in the current ViewHolder
         Picasso.with(mContext)
                 .load(currentMovie.getMoviePosterUrl().toString())
                 .into(posterAdapterViewHolder.listItemImageView);
@@ -101,15 +96,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
     /**
      * This method simply returns the number of items to display. It is used behind the scenes
-     * to help layout our Views and for animations.
+     * by LayoutManager to help layout our Views and for animations.
      *
      * @return The number of items available
      */
     @Override
     public int getItemCount() {
-        if (null == mMovies) return 0;
-        mNumberItems = mMovies.size();
-        return mNumberItems;
+        return mMovies.size();
     }
 
     public void updateMovies(ArrayList<Movie> movies) {
@@ -135,9 +128,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         // Displays a movie poster image
         ImageView listItemImageView;
 
-        // Displays the movie title
-        TextView movieTitle;
-
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
          * ImageView and set an onClickListener to listen for clicks, which will be handled in the
@@ -151,9 +141,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
             // Get a reference to the ImageView
             listItemImageView = itemView.findViewById(R.id.poster_iv);
-
-            // Get a reference to the TextView
-//            movieTitle = itemView.findViewById(R.id.movie_title_tv);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
             itemView.setOnClickListener(this);
