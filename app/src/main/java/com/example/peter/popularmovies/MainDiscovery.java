@@ -36,23 +36,29 @@ public class MainDiscovery extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_discovery);
 
-        // Get a reference to recycler xml resource
+        /* Get a reference to the recycler view */
         mRecyclerView = findViewById(R.id.posters_rv);
 
-        // GridLayoutManager is responsible for measuring and positioning item views within a
-        // RecyclerView into a grid layout.
+        /* GridLayoutManager is responsible for measuring and positioning item views within a
+         * RecyclerView into a grid layout.
+         */
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        // Set the layout manager onto our RecyclerView
+        /* Connect the layout manager to the RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
 
+        /* Developer docs recommend using this performance improvement if all of the views are the
+         * same size
+         */
         mRecyclerView.setHasFixedSize(true);
+
+        /* Instantiate the data source for the adapter */
         mMovies = new ArrayList<>();
 
-        // Create a new adapter that takes an empty list of Movie objects as input
+        /* Create a new adapter that takes an empty list of Movie objects */
         mPosterAdapter = new PosterAdapter(this, mMovies, this);
 
-        // Setting the adapter attaches it to the RecyclerView in our layout.
+        /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mPosterAdapter);
 
         /*

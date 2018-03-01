@@ -13,23 +13,27 @@ import java.util.ArrayList;
 
 /**
  * Created by peter on 22/02/2018.
- * Utility class with methods to perform the HTTP request and parse the JSON response
+ * Utility class with methods to perform the HTTP request and parse the JSON response.
  */
 
 public final class JsonUtils {
 
-    // Log tag for this class
+    /* Log tag for this class */
     private static final String LOG_TAG = JsonUtils.class.getSimpleName();
 
+    /* JSON movie elements */
+    private static final String MOVIE_LIST = "results";
+    private static final String MOVIE_TITLE = "title";
+    private static final String MOVIE_POSTER = "poster_path";
+
     /**
-     * Query the TMDb server and return a list of Movie objects based on user preferences
-     * TODO - User preferences
+     * Query the TMDb server and return a list of Movie objects based on user preferences.
      */
     public static ArrayList<Movie> getMovieData(int searchType) {
         /* Create the URL object */
         URL url = NetworkUtils.getMovieSearchUrl(searchType);
 
-        // Perform a HTTP request to the URL and receive a JSON response back
+        // Perform a HTTP request to the URL and receive a JSON response back.
         String jsonResponse = null;
         try {
             jsonResponse = NetworkUtils.getResponseFromHttpUrl(url);
@@ -37,53 +41,59 @@ public final class JsonUtils {
             e.printStackTrace();
         }
 
-        // Return the list of {@link Movie} objects
+        // Return the list of {@link Movie} objects.
         return extractFeatureFromJson(jsonResponse);
     }
 
+    /**
+     * Extracts data from JSON to new Movie objects.
+     *
+     * @param movieJson A string containing JSON returned from the server.
+     * @return An ArrayList of new Movie objects.
+     */
     private static ArrayList<Movie> extractFeatureFromJson(String movieJson) {
         // If the JSON string is empty or null return immediately
         if (TextUtils.isEmpty(movieJson)) {
             return null;
         }
 
-        // Instantiate an empty ArrayList
+        // Instantiate an empty ArrayList to store new Movie objects.
         ArrayList<Movie> movies = new ArrayList<>();
 
-        // Try to parse the JSON response String. If there is a problem an exception will be
-        // thrown which will be caught and logged. This prevents the app from crashing and provides
-        // useful diagnostic information.
+        /* Try to parse the JSON response String. If there is a problem an exception will be
+         * thrown which will be caught and logged. This prevents the app from crashing and provides
+         * useful diagnostic information.
+         */
         try {
-            // Create a JSON object from the input string
+            /* Create a JSON object from the input string */
             JSONObject baseJsonResponse = new JSONObject(movieJson);
 
-            // Extract the array of movie objects from the base JSON response
-            JSONArray resultsArray = baseJsonResponse.getJSONArray("results");
+            /* Extract the array of movie objects from the base JSON response */
+            JSONArray resultsArray = baseJsonResponse.getJSONArray(MOVIE_LIST);
 
-            // Iterate through the array extracting the movie objects and assign their values
-            // to new Movie objects
+            /* Extract movie objects, assign their values to new Movie objects */
             for (int i = 0; i < resultsArray.length(); i++) {
 
                 // Get a single movie object at position 'i'
                 JSONObject currentMovie = resultsArray.getJSONObject(i);
 
-                // Extract the movie title
-                String movieTitle = currentMovie.optString("title");
+                // Extract the movie title.
+                String movieTitle = currentMovie.optString(MOVIE_TITLE);
 
-                // Extract the poster path and build the URL for the image
-                String posterPath = currentMovie.optString("poster_path");
+                // Extract the poster path and build the URL for the image.
+                String posterPath = currentMovie.optString(MOVIE_POSTER);
                 URL posterUrl = NetworkUtils.getMoviePosterUrl(posterPath);
 
-                // Create a new Movie object and pass in the required fields
+                // Create a new Movie object and pass in the required fields.
                 Movie movie = new Movie(movieTitle, posterUrl);
 
-                // Add the new movie to the list of movies
+                // Add the new movie to the list of movies.
                 movies.add(movie);
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing JSON results with error: " + e);
         }
-        // Return the list of movies
+        // Return the list of movies.
         return movies;
     }
 }
