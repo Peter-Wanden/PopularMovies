@@ -3,6 +3,8 @@ package com.example.peter.popularmovies;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
@@ -19,14 +22,19 @@ import com.example.peter.popularmovies.utils.NetworkUtils;
 import java.util.ArrayList;
 
 
-public class MainDiscovery extends AppCompatActivity
-        implements LoaderCallbacks<ArrayList<Movie>>, PosterAdapter.PosterAdapterOnClickHandler {
+public class MainDiscovery extends AppCompatActivity implements
+        LoaderCallbacks<ArrayList<Movie>>,
+        PosterAdapter.PosterAdapterOnClickHandler,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     // Log tag for this class
     private static final String LOG_TAG = MainDiscovery.class.getSimpleName();
 
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
+
+    // Data source
+    private ArrayList<Movie> mMovies;
 
     // Adapter
     private PosterAdapter mPosterAdapter;
@@ -53,7 +61,7 @@ public class MainDiscovery extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
 
         /* Instantiate the data source for the adapter */
-        ArrayList<Movie> mMovies = new ArrayList<>();
+        mMovies = new ArrayList<>();
 
         /* Create a new adapter that takes an empty list of Movie objects */
         mPosterAdapter = new PosterAdapter(this, mMovies, this);
@@ -74,6 +82,17 @@ public class MainDiscovery extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (key.equals(getString(R.string.settings_order_by_key))) {
+            // Clear the ListView as a new query will be kicked off
+            mMovies.clear();
+
+            // Restart the loader to requery the USGS as the query settings have been updated
+            getLoaderManager().restartLoader(POSTER_LOADER_ID, null, this);
+        }
+    }
+
     /**
      * Instantiates and returns a new loader for the given loaderId
      *
@@ -84,8 +103,15 @@ public class MainDiscovery extends AppCompatActivity
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int loaderId, Bundle bundle) {
 
+        // Get the user preference for the move search type
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int orderBy = Integer.parseInt(preferences.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        ));
+
         // On a background thread return an ArrayList of movies
-        return new MovieLoader(this, 0);
+        return new MovieLoader(this, orderBy);
     }
 
     /**
