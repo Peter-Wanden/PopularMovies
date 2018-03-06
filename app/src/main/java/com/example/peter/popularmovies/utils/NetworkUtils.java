@@ -19,7 +19,8 @@ import java.util.Scanner;
  * Created by peter on 24/02/2018.
  * This class constructs a URL and then queries 'The Movie Database' API.
  * Each URL returns a list of either the most popular or highest rated movies.
- * Each result is accompanied by an image URL pointing to its corresponding movie poster.
+ * If available, each result is accompanied by an image URL pointing to its corresponding
+ * movie poster.
  *
  * TODO - Limit the search results to a reasonable amount
  *
@@ -77,6 +78,12 @@ public final class NetworkUtils {
 
     /* Specifies the size of the image to return. */
     private static final String IMAGE_SIZE = "w185";
+
+    /* If there is no image of the type and size requested we can use the URL in the same way
+     * as we do a URI in a ContentProvider by adding a path that tell's the methods that use it
+     * no poster is available
+     *
+     */
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils}
@@ -136,6 +143,7 @@ public final class NetworkUtils {
                 Log.e(LOG_TAG, "Search criteria not supported for search type: "
                         + searchType);
         }
+
         // Append the API key, and return the completed search URL as a String.
         searchUri.appendQueryParameter(API_KEY, API_KEY_VALUE).build();
 

@@ -12,11 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
 import java.util.ArrayList;
 
+// TODO - Implement loading indicators
 
 public class MainDiscovery extends AppCompatActivity implements
         LoaderCallbacks<ArrayList<Movie>>,
@@ -28,9 +30,6 @@ public class MainDiscovery extends AppCompatActivity implements
 
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
-
-    // Data source
-    private ArrayList<Movie> mMovies;
 
     // Adapter
     private PosterAdapter mPosterAdapter;
@@ -47,21 +46,20 @@ public class MainDiscovery extends AppCompatActivity implements
          * RecyclerView into a grid layout.
          */
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        layoutManager.getHeight();
 
 
         /* Connect the layout manager to the RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
 
         /* Developer docs recommend using this performance improvement if all of the views are the
-         * same size
+         * same size. They are actually not, as some are text and some are images. The use of
+         * setHasFixedSize here is to force
          */
         mRecyclerView.setHasFixedSize(true);
 
-        /* Instantiate the data source for the adapter */
-        mMovies = new ArrayList<>();
-
         /* Create a new adapter that takes an empty list of Movie objects */
-        mPosterAdapter = new PosterAdapter(this, mMovies, this);
+        mPosterAdapter = new PosterAdapter(this, this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mPosterAdapter);
@@ -82,8 +80,6 @@ public class MainDiscovery extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.equals(getString(R.string.settings_order_by_key))) {
-            // Clear the ListView as a new query will be kicked off
-            mMovies.clear();
 
             // Restart the loader to requery the server as the query settings have been updated
             getLoaderManager().restartLoader(POSTER_LOADER_ID, null, this);
@@ -123,30 +119,35 @@ public class MainDiscovery extends AppCompatActivity implements
         if (movies != null && !movies.isEmpty()) {
             // Update the data source in the adapter
             mPosterAdapter.updateMovies(movies);
-            // Tell the adapter it has new data
-            mPosterAdapter.notifyDataSetChanged();
         } else {
             Log.i(LOG_TAG, "No data returned in onLoadFinished");
         }
     }
 
     /**
-     * Called when a previously created loader is being reset, thus making its data unavailable.
+     * Called when a previously created loader is being reset, thus making its data unavailable
      * @param loader - The ID of the loader to reset.
      */
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-        mMovies.clear();
-        mPosterAdapter.updateMovies(mMovies);
+        // Clear out the data in the adapter
+        mPosterAdapter.updateMovies(null);
     }
 
     /**
      * This method is for responding to clicks from our list.
      *
-     * @param clickedItemIndex is the position in the RecyclerView.
+     * @param movieTitle is the position in the RecyclerView.
+     * @param moviePosterUrl is the URL endpoint of the poster
      */
     @Override
-    public void onClick(int clickedItemIndex) {
+    public void onClick(String movieTitle, String moviePosterUrl) {
+        // TODO - Build an intent to open the detail activity / fragment
+
+        Toast.makeText(this,
+                "Movie Title: " + movieTitle + "\n" +
+                        "Poster URL: " + moviePosterUrl, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

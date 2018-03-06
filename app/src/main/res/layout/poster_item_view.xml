@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#081c24"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/poster_iv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/movie_title_tv"
+        style="@style/MovieTextTheme"
+        android:layout_centerInParent="true"
+        android:padding="15dp"
+        android:textColor="@color/colorAccent"
+        tools:text="This is the title of a movie" />
+
+    <TextView
+        android:id="@+id/no_poster_available_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp"
+        android:text="@string/no_poster"
+        android:textColor="@color/background_light"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/tmdb_logo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignBottom="@+id/poster_iv"
+        android:layout_alignRight="@+id/poster_iv"
+        android:paddingBottom="8dp"
+        android:paddingRight="8dp" />
+</RelativeLayout>

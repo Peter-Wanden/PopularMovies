@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Created by peter on 22/02/2018.
- * Utility class with methods to perform the HTTP request and parse the JSON response.
+ * Utility class with methods to parse the JSON response.
  */
 
 public final class JsonUtils {
@@ -80,12 +80,23 @@ public final class JsonUtils {
                 // Extract the movie title.
                 String movieTitle = currentMovie.optString(MOVIE_TITLE);
 
-                // Extract the poster path and build the URL for the image.
+                // Extract the movies poster URL endpoint
                 String posterPath = currentMovie.optString(MOVIE_POSTER);
-                URL posterUrl = NetworkUtils.getMoviePosterUrl(posterPath);
+
+                // If no poster path is available, append no_image available.
+                if (posterPath == null || posterPath.isEmpty() || posterPath.equals("null")) {
+                    posterPath = "no_image_available";
+                }
+                if (i == 5) {
+                    posterPath = "no_image_available";
+                }
+
+                // Instantiate a new URL object for the movie poster
+                URL moviePosterUrl = NetworkUtils
+                        .getMoviePosterUrl(posterPath);
 
                 // Create a new Movie object and pass in the required fields.
-                Movie movie = new Movie(movieTitle, posterUrl);
+                Movie movie = new Movie(movieTitle, moviePosterUrl);
 
                 // Add the new movie to the list of movies.
                 movies.add(movie);

@@ -1,11 +1,13 @@
 package com.example.peter.popularmovies;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import com.example.peter.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -38,14 +40,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * for the PosterAdapterOnClickHandler.
      *
      * @param context Used to talk to the UI and app resources
-     * @param movies The data source
      * @param listener Listener for list item clicks
      */
-    public PosterAdapter(Context context, ArrayList<Movie> movies,
-                         PosterAdapterOnClickHandler listener) {
+    public PosterAdapter(Context context, PosterAdapterOnClickHandler listener) {
         mContext = context;
         mClickHandler = listener;
-        mMovies = movies;
+
+        // Instantiate a blank list ready to be populated by the results
+        mMovies = new ArrayList<>();
     }
 
     /**
@@ -69,7 +71,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         view.setFocusable(true);
 
-        return new PosterAdapterViewHolder(view);
+        return new PosterAdapterViewHolder(viewGroup, view);
     }
 
     /**
@@ -88,10 +90,45 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         // Get the current Movie object
         Movie currentMovie = mMovies.get(position);
 
-        // Display the movies poster in the current ViewHolder
-        Picasso.with(mContext)
-                .load(currentMovie.getMoviePosterUrl().toString())
-                .into(posterAdapterViewHolder.listItemImageView);
+        // Get the last path segment of the movie poster URL so we can check for an image path.
+        String lastPathSegment = Uri
+                .parse(currentMovie
+                        .getMoviePosterUrl()
+                        .toString())
+                .getLastPathSegment();
+
+
+        /* If a valid movie poster URL endpoint is not available:
+         * - Turn the visibility of movieTitleTextView and noPosterAvailableTextView to on
+         * - Display the movie title + (No movie poster available)         *
+         */
+
+        if (lastPathSegment.equals("no_image_available")) {
+            // If the standard height of an image has been previously set
+            Picasso.with(mContext)
+                    .load(R.drawable.popular_movies_poster)
+                    .into(posterAdapterViewHolder.listItemImageView);
+
+            posterAdapterViewHolder.movieTitleTextView.setVisibility(View.VISIBLE);
+            posterAdapterViewHolder.movieTitleTextView.setText(currentMovie.getTitle());
+
+            posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.VISIBLE);
+            posterAdapterViewHolder.noPosterAvailableTextView.setText(R.string.no_poster);
+
+        } else {
+
+        /* If a valid movie poster URL endpoint is available:
+         * - Display the movies poster in the current ViewHolder
+         */
+            posterAdapterViewHolder.movieTitleTextView.setVisibility(View.INVISIBLE);
+            posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.INVISIBLE);
+
+            Picasso.with(mContext)
+                    .load(currentMovie.getMoviePosterUrl().toString())
+                    .into(posterAdapterViewHolder.listItemImageView);
+        }
+        // Add the attribution logo to each view
+        posterAdapterViewHolder.tmdbLogoImageView.setImageResource(R.drawable.ic_stacked_green);
     }
 
     /**
@@ -106,17 +143,20 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     public void updateMovies(ArrayList<Movie> movies) {
-        mMovies.clear();
         if (movies != null && !movies.isEmpty()) {
+            mMovies.clear();
             mMovies.addAll(movies);
+        } else {
+            mMovies.clear();
         }
+        notifyDataSetChanged();
     }
 
     /**
      * The interface that receives onClick messages.
      */
     public interface PosterAdapterOnClickHandler {
-        void onClick(int clickedItemIndex);
+        void onClick(String clickedItemIndex, String moviePosterUrl);
     }
 
     /**
@@ -127,8 +167,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     class PosterAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        // Displays a movie poster image
+        // Holder to display a movie poster image
         ImageView listItemImageView;
+
+        // Holder to display the movie title if no image is available
+        TextView movieTitleTextView;
+
+        // Holder to display 'No image available', if no movie poster is available
+        TextView noPosterAvailableTextView;
+
+        ImageView tmdbLogoImageView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -138,14 +186,20 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
          * @param itemView The View that you inflated in
          *                 {@link PosterAdapter#onCreateViewHolder(ViewGroup, int)}
          */
-        PosterAdapterViewHolder(View itemView) {
+        PosterAdapterViewHolder(ViewGroup parent, View itemView) {
             super(itemView);
 
-            // Get a reference to the ImageView
+            // Get a reference to the views
             listItemImageView = itemView.findViewById(R.id.poster_iv);
+            movieTitleTextView = itemView.findViewById(R.id.movie_title_tv);
+            noPosterAvailableTextView = itemView.findViewById(R.id.no_poster_available_tv);
+            tmdbLogoImageView = itemView.findViewById(R.id.tmdb_logo);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
             itemView.setOnClickListener(this);
+
+            // Set minimum height
+            itemView.setMinimumHeight(parent.getMeasuredHeight() / 4);
         }
 
         /**
@@ -156,7 +210,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            mClickHandler.onClick(clickedPosition);
+            Movie currentMovie = mMovies.get(clickedPosition);
+            String clickedMovieTitle = currentMovie.getTitle();
+
+            Uri posterUri = Uri.parse(String.valueOf(currentMovie.getMoviePosterUrl()));
+            String moviePosterUrl = posterUri.getLastPathSegment();
+
+            mClickHandler.onClick(clickedMovieTitle, moviePosterUrl);
         }
     }
 }

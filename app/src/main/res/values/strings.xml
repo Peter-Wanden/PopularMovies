@@ -1,6 +1,6 @@
 <resources>
     <!-- Title for the application. [CHAR LIMIT=12] -->
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Popular Movies</string>
 
     <!-- Settings Activity Title [CHAR LIMIT=NONE] -->
     <string name="settings_title">Popular Movie Settings</string>
@@ -22,5 +22,6 @@
     <string name="settings_order_by_highest_rated_label">Highest Rated</string>
     <string name="settings_order_by_highest_rated_value" translatable="false">1</string>
 
-
+    <!-- Main Discovery Activity -->
+    <string name="no_poster">No poster available for this movie</string>
 </resources>
