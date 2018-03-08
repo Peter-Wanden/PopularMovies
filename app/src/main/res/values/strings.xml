@@ -1,4 +1,6 @@
 <resources>
+    <!-- TODO - Implement accessibility options -->
+
     <!-- Title for the application. [CHAR LIMIT=12] -->
     <string name="app_name">Popular Movies</string>
 
@@ -23,5 +25,7 @@
     <string name="settings_order_by_highest_rated_value" translatable="false">1</string>
 
     <!-- Main Discovery Activity -->
-    <string name="no_poster">No poster available for this movie</string>
+    <string name="title_movie_detail">Movie Details</string>
+    <string name="no_poster">No movie poster available for this movie</string>
+
 </resources>

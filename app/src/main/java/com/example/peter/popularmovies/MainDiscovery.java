@@ -4,6 +4,10 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,10 +16,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // TODO - Implement loading indicators
@@ -30,7 +35,7 @@ public class MainDiscovery extends AppCompatActivity implements
 
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
-
+    public Parcel mParcel;
     // Adapter
     private PosterAdapter mPosterAdapter;
 
@@ -47,6 +52,7 @@ public class MainDiscovery extends AppCompatActivity implements
          */
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         layoutManager.getHeight();
+
 
 
         /* Connect the layout manager to the RecyclerView */
@@ -136,18 +142,13 @@ public class MainDiscovery extends AppCompatActivity implements
 
     /**
      * This method is for responding to clicks from our list.
-     *
-     * @param movieTitle is the position in the RecyclerView.
-     * @param moviePosterUrl is the URL endpoint of the poster
+     * @param selectedMovie is a complete Movie object containing all of the selected movies data.
      */
     @Override
-    public void onClick(String movieTitle, String moviePosterUrl) {
-        // TODO - Build an intent to open the detail activity / fragment
-
-        Toast.makeText(this,
-                "Movie Title: " + movieTitle + "\n" +
-                        "Poster URL: " + moviePosterUrl, Toast.LENGTH_SHORT).show();
-
+    public void onClick(Movie selectedMovie) {
+        Intent movieDetailIntent = new Intent(MainDiscovery.this, MovieDetail.class);
+        movieDetailIntent.putExtra("selected_movie", selectedMovie);
+        startActivity(movieDetailIntent);
     }
 
     @Override

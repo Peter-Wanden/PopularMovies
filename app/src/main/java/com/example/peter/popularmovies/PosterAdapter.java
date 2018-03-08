@@ -156,7 +156,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * The interface that receives onClick messages.
      */
     public interface PosterAdapterOnClickHandler {
-        void onClick(String clickedItemIndex, String moviePosterUrl);
+        void onClick(Movie clickedMovie);
     }
 
     /**
@@ -204,19 +204,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         /**
          * Called whenever a user clicks on an item in the list. Returns the clicked position
-         *
          * @param v The View that was clicked
          */
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             Movie currentMovie = mMovies.get(clickedPosition);
-            String clickedMovieTitle = currentMovie.getTitle();
-
-            Uri posterUri = Uri.parse(String.valueOf(currentMovie.getMoviePosterUrl()));
-            String moviePosterUrl = posterUri.getLastPathSegment();
-
-            mClickHandler.onClick(clickedMovieTitle, moviePosterUrl);
+            mClickHandler.onClick(currentMovie);
         }
     }
 }

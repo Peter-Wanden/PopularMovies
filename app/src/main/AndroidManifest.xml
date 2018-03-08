@@ -23,6 +23,12 @@
         </activity>
 
         <activity
+            android:name=".MovieDetail"
+            android:label="@string/title_movie_detail"
+            android:parentActivityName=".MainDiscovery"
+            android:theme="@style/AppTheme"></activity>
+
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/settings_title">
             <meta-data

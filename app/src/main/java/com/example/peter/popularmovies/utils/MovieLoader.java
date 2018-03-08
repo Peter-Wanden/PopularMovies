@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by peter on 28/02/2018.
@@ -18,7 +20,7 @@ public class MovieLoader extends AsyncTaskLoader<ArrayList<Movie>> {
     private int mMovieSearchType;
 
     /**
-     * Constructs a new {@link MovieLoader}
+     * Constructs a new {@link MovieLoader} that returns a list of movies.
      *
      * @param context
      * @param movieSearchType - The type of search requested.

@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.peter.popularmovies.BuildConfig;
 import com.example.peter.popularmovies.MainDiscovery;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public final class NetworkUtils {
     private static final String API_KEY = "api_key";
 
     /* API Key */
-    private static final String API_KEY_VALUE = "dc92a2a6c5b67810baa769bdd918b776";
+    private static final String API_KEY_VALUE = BuildConfig.API_KEY;
 
     /* Base URL for a search. */
     private static final String BASE_SEARCH_URL = "https://api.themoviedb.org/3";
@@ -78,12 +79,6 @@ public final class NetworkUtils {
 
     /* Specifies the size of the image to return. */
     private static final String IMAGE_SIZE = "w185";
-
-    /* If there is no image of the type and size requested we can use the URL in the same way
-     * as we do a URI in a ContentProvider by adding a path that tell's the methods that use it
-     * no poster is available
-     *
-     */
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils}
@@ -148,7 +143,11 @@ public final class NetworkUtils {
         searchUri.appendQueryParameter(API_KEY, API_KEY_VALUE).build();
 
         try {
-            return new URL(searchUri.toString());
+            URL url = new URL(searchUri.toString());
+            Log.e(LOG_TAG, "Search URL is: " + url);
+            return url;
+
+            // return new URL(searchUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

@@ -15,7 +15,7 @@
         android:padding="4dp" />
 
     <TextView
-        android:id="@+id/movie_title_tv"
+        android:id="@+id/movie_title_poster_tv"
         style="@style/MovieTextTheme"
         android:layout_centerInParent="true"
         android:padding="15dp"
