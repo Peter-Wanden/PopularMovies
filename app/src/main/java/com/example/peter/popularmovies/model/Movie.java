@@ -2,9 +2,7 @@ package com.example.peter.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by peter on 23/02/2018.
@@ -17,7 +15,7 @@ import java.net.URL;
  */
 public class Movie implements Parcelable {
 
-    /* Constant for this class */
+    /* Parcelable CREATOR */
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
 
         /* This calls the private 'Movie(Parcel in)' constructor and passes along the Parcel
@@ -43,15 +41,17 @@ public class Movie implements Parcelable {
     private int mId;
     // Title of the movie.
     private String mTitle;
-    // The movies original title
+    // The movies original title.
     private String mOriginalTitle;
-    // The movies Image URL.
-    private URL mPosterUrl;
-    // The movies synopsis
+    // The movies poster image URL.
+    private String mImagePosterPath;
+    // The movies backdrop image URL.
+    private String mImageBackdropPath;
+    // The movies synopsis.
     private String mSynopsis;
-    // The movies user rating
+    // The movies user rating.
     private int mUserRating;
-    // The movies release date
+    // The movies release date.
     private String mMovieReleaseDate;
 
     /**
@@ -61,12 +61,13 @@ public class Movie implements Parcelable {
      * @param posterURL The endpoint of the poster location. This needs to be completed
      *                  before it can point to the server.
      */
-    public Movie(int Id, String title, String originalTitle, URL posterURL,
+    public Movie(int Id, String title, String originalTitle, String posterURL, String backDropUrl,
                  String synopsis, int userRating, String movieReleaseDate) {
         mId = Id;
         mTitle = title;
         mOriginalTitle = originalTitle;
-        mPosterUrl = posterURL;
+        mImagePosterPath = posterURL;
+        mImageBackdropPath = backDropUrl;
         mSynopsis = synopsis;
         mUserRating = userRating;
         mMovieReleaseDate = movieReleaseDate;
@@ -79,7 +80,8 @@ public class Movie implements Parcelable {
         mId = in.readInt();
         mTitle = in.readString();
         mOriginalTitle = in.readString();
-        mPosterUrl = new URL(in.readString());
+        mImagePosterPath = in.readString();
+        mImageBackdropPath = in.readString();
         mSynopsis = in.readString();
         mUserRating = in.readInt();
         mMovieReleaseDate = in.readString();
@@ -100,9 +102,14 @@ public class Movie implements Parcelable {
         return mOriginalTitle;
     }
 
-    /* Returns the movie poster image Url */
-    public URL getMoviePosterUrl() {
-        return mPosterUrl;
+    /* Returns the movie poster image Url path */
+    public String getPosterImagePath() {
+        return mImagePosterPath;
+    }
+
+    /* Returns the movie backdrop image Url path */
+    public String getBackdropImagePath() {
+        return mImageBackdropPath;
     }
 
     /* Returns the movies synopsis */
@@ -132,7 +139,8 @@ public class Movie implements Parcelable {
         out.writeInt(mId);
         out.writeString(mTitle);
         out.writeString(mOriginalTitle);
-        out.writeString(mPosterUrl.toString());
+        out.writeString(mImagePosterPath);
+        out.writeString(mImageBackdropPath);
         out.writeString(mSynopsis);
         out.writeInt(mUserRating);
         out.writeString(mMovieReleaseDate);

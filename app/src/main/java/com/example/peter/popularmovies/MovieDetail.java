@@ -2,17 +2,23 @@ package com.example.peter.popularmovies;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.peter.popularmovies.app.Constants;
 import com.example.peter.popularmovies.databinding.ActivityMovieDetailBinding;
 import com.example.peter.popularmovies.model.Movie;
+import com.example.peter.popularmovies.utils.NetworkUtils;
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
 
 /**
  * Created by peter on 06/03/2018.
  * Manages the detail view
+ * TODO - Pass in the adapter position so we can return to it when the back button is pressed
+ * TODO - Set the title to the title of the movie (maybe have tmdb logo on the bar??)
+ *
  */
 
 public class MovieDetail extends AppCompatActivity {
@@ -41,5 +47,16 @@ public class MovieDetail extends AppCompatActivity {
 
         // Extract the parcelable data from the intent and turn it back into a Movie object
         mSelectedMovie = getIntent().getParcelableExtra("selected_movie");
+
+        mDetailBinding.movieDetailTitleTv.setText(mSelectedMovie.getTitle());
+
+        URL backdropUrl = NetworkUtils.getMovieImageUrl(Constants.IMAGE_SIZE_XLARGE,
+                mSelectedMovie.getBackdropImagePath());
+
+        Log.e(LOG_TAG, "Backdrop Url: " + backdropUrl.toString());
+
+        Picasso.with(this)
+                .load(backdropUrl.toString())
+                .into(mDetailBinding.movieDetailTrailerThumbnailIv);
     }
 }

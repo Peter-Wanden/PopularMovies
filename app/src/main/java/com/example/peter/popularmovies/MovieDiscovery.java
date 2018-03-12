@@ -4,10 +4,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,33 +12,35 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.peter.popularmovies.app.Constants;
 import com.example.peter.popularmovies.model.Movie;
 import com.example.peter.popularmovies.utils.MovieLoader;
 import com.example.peter.popularmovies.utils.NetworkUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+
 
 // TODO - Implement loading indicators
 
-public class MainDiscovery extends AppCompatActivity implements
+public class MovieDiscovery extends AppCompatActivity implements
         LoaderCallbacks<ArrayList<Movie>>,
         PosterAdapter.PosterAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     // Log tag for this class
-    private static final String LOG_TAG = MainDiscovery.class.getSimpleName();
+    private static final String LOG_TAG = MovieDiscovery.class.getSimpleName();
 
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
-    public Parcel mParcel;
-    // Adapter
+
+    // Adapter instance
     private PosterAdapter mPosterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_discovery);
+        setContentView(R.layout.activity_movie_discovery);
 
         /* Get a reference to the recycler view */
         RecyclerView mRecyclerView = findViewById(R.id.posters_rv);
@@ -50,17 +48,15 @@ public class MainDiscovery extends AppCompatActivity implements
         /* GridLayoutManager is responsible for measuring and positioning item views within a
          * RecyclerView into a grid layout.
          */
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.num_columns));
         layoutManager.getHeight();
-
-
 
         /* Connect the layout manager to the RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
 
         /* Developer docs recommend using this performance improvement if all of the views are the
          * same size. They are actually not, as some are text and some are images. The use of
-         * setHasFixedSize here is to force
+         * setHasFixedSize here is to force the views to be of equal size.
          */
         mRecyclerView.setHasFixedSize(true);
 
@@ -78,6 +74,7 @@ public class MainDiscovery extends AppCompatActivity implements
             getLoaderManager().initLoader(POSTER_LOADER_ID, null, this);
 
         } else {
+            // TODO - Deal with this the same way as in quake report
             // Otherwise, log error
             Log.e(LOG_TAG, "Network connection error");
         }
@@ -87,7 +84,7 @@ public class MainDiscovery extends AppCompatActivity implements
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.equals(getString(R.string.settings_order_by_key))) {
 
-            // Restart the loader to requery the server as the query settings have been updated
+            // Restart the loader to re-query the server as the query settings have been updated
             getLoaderManager().restartLoader(POSTER_LOADER_ID, null, this);
         }
     }
@@ -146,8 +143,8 @@ public class MainDiscovery extends AppCompatActivity implements
      */
     @Override
     public void onClick(Movie selectedMovie) {
-        Intent movieDetailIntent = new Intent(MainDiscovery.this, MovieDetail.class);
-        movieDetailIntent.putExtra("selected_movie", selectedMovie);
+        Intent movieDetailIntent = new Intent(MovieDiscovery.this, MovieDetail.class);
+        movieDetailIntent.putExtra(Constants.SELECTED_MOVIE_KEY, selectedMovie);
         startActivity(movieDetailIntent);
     }
 
@@ -157,6 +154,7 @@ public class MainDiscovery extends AppCompatActivity implements
         return true;
     }
 
+    // TODO - Get the currently selected option and setTitle() with it
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

@@ -7,7 +7,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.peter.popularmovies.BuildConfig;
-import com.example.peter.popularmovies.MainDiscovery;
+import com.example.peter.popularmovies.MovieDiscovery;
+import com.example.peter.popularmovies.app.Constants;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,9 @@ import java.util.Scanner;
  * If available, each result is accompanied by an image URL pointing to its corresponding
  * movie poster.
  *
- * TODO - Limit the search results to a reasonable amount
+ * TODO - Limit the search results to a reasonable amount.
+ * TODO - Display a message if there is no results.
+ * TODO - Display a message if there is no network connection.
  *
  */
 
@@ -74,12 +77,6 @@ public final class NetworkUtils {
     /* Sort criteria for highest rated */
     private static final String RATING = "vote_average.desc";
 
-    /* Base URL for poster images */
-    private static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
-
-    /* Specifies the size of the image to return. */
-    private static final String IMAGE_SIZE = "w185";
-
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils}
      * object. This class is only meant to hold static variables and methods, which can be accessed
@@ -98,7 +95,7 @@ public final class NetworkUtils {
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(MainDiscovery.CONNECTIVITY_SERVICE);
+                context.getSystemService(MovieDiscovery.CONNECTIVITY_SERVICE);
 
         // Get details on the currently active default data network
         NetworkInfo networkInfo = null;
@@ -157,18 +154,41 @@ public final class NetworkUtils {
     /**
      * Constructs and returns a URL that will return a specified image from the server
      *
-     * @param posterPath - The path to the poster image for the requested movie.
-     * @return - A complete Url that returns a poster image of the correct size.
+     * @param imageType - See {@link Constants} - the size of image
+     * @param imagePath - The path to the image for the selected movie.
+     * @return          - A complete Url that returns an image of the correct type and size.
      */
-    public static URL getMoviePosterUrl(String posterPath) {
+    public static URL getMovieImageUrl(String imageType, String imagePath) {
 
-        //Build the Uri
-        Uri.Builder moviePosterUri = Uri.parse(BASE_IMAGE_URL).buildUpon()
-                .appendPath(IMAGE_SIZE)
-                .appendEncodedPath(posterPath);
+        //TODO Convert to switch statement if possible
+        // Build the base Uri
+        Uri.Builder getImageUrl = Uri.parse(Constants.BASE_IMAGE_URL).buildUpon();
 
+        // Add the required image size
+        switch (imageType) {
+            case Constants.IMAGE_SIZE_SMALL:
+                getImageUrl.appendPath(Constants.IMAGE_SIZE_SMALL);
+                break;
+            case Constants.IMAGE_SIZE_MEDIUM:
+                getImageUrl.appendPath(Constants.IMAGE_SIZE_MEDIUM);
+                break;
+            case Constants.IMAGE_SIZE_LARGE:
+                getImageUrl.appendPath(Constants.IMAGE_SIZE_LARGE);
+                break;
+            case Constants.IMAGE_SIZE_XLARGE:
+                getImageUrl.appendPath(Constants.IMAGE_SIZE_XLARGE);
+                break;
+            default:
+                Log.i(LOG_TAG, "Image size not supported");
+        }
+
+        // Add the image path
+        getImageUrl.appendEncodedPath(imagePath);
+
+        // Return the Url
         try {
-            return new URL(moviePosterUri.toString());
+            Log.e(LOG_TAG, "Movie image URL: " + getImageUrl.toString());
+            return new URL(getImageUrl.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

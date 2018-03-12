@@ -1,14 +1,16 @@
 package com.example.peter.popularmovies;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.peter.popularmovies.app.Constants;
 import com.example.peter.popularmovies.model.Movie;
+import com.example.peter.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
@@ -16,6 +18,9 @@ import java.util.ArrayList;
  * Created by peter on 23/02/2018.
  * {@link PosterAdapter} exposes a list of Movie posters from an ArrayList
  * to an {@link android.support.v7.widget.RecyclerView}.
+ *
+ * TODO - when coming back to activity return to where you left on the list
+ *
  */
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
@@ -90,45 +95,44 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         // Get the current Movie object
         Movie currentMovie = mMovies.get(position);
 
-        // Get the last path segment of the movie poster URL so we can check for an image path.
-        String lastPathSegment = Uri
-                .parse(currentMovie
-                        .getMoviePosterUrl()
-                        .toString())
-                .getLastPathSegment();
+        // Get the image path of the movie poster URL so we can check for a valid image path.
+        String imagePath = currentMovie.getPosterImagePath();
 
+        // Set the movie title
+        posterAdapterViewHolder.movieTitleTextView.setText(currentMovie.getTitle());
 
-        /* If a valid movie poster URL endpoint is not available:
-         * - Turn the visibility of movieTitleTextView and noPosterAvailableTextView to on
-         * - Display the movie title + (No movie poster available)         *
-         */
+        /* If a valid movie poster URL endpoint is not available */
+        if (imagePath.equals("no_image_available")) {
 
-        if (lastPathSegment.equals("no_image_available")) {
-            // If the standard height of an image has been previously set
-            Picasso.with(mContext)
-                    .load(R.drawable.popular_movies_poster)
-                    .into(posterAdapterViewHolder.listItemImageView);
-
-            posterAdapterViewHolder.movieTitleTextView.setVisibility(View.VISIBLE);
-            posterAdapterViewHolder.movieTitleTextView.setText(currentMovie.getTitle());
-
+            // Swap the visibilities of the various views
+            posterAdapterViewHolder.listItemImageView.setVisibility(View.GONE);
             posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.VISIBLE);
-            posterAdapterViewHolder.noPosterAvailableTextView.setText(R.string.no_poster);
+            posterAdapterViewHolder.listItemNoImageImageView.setVisibility(View.VISIBLE);
+
+            // Set the image to be a tmdb logo
+            posterAdapterViewHolder.listItemNoImageImageView
+                    .setImageDrawable(mContext.getResources()
+                            .getDrawable(R.drawable.ic_powered_by_rectangle_green));
+
+            posterAdapterViewHolder.noPosterAvailableTextView
+                    .setText(R.string.no_poster);
 
         } else {
 
-        /* If a valid movie poster URL endpoint is available:
-         * - Display the movies poster in the current ViewHolder
-         */
-            posterAdapterViewHolder.movieTitleTextView.setVisibility(View.INVISIBLE);
+            /* If a valid movie poster URL endpoint is available:
+             * - Display the movies poster in the current ViewHolder
+             * TODO - set the placeholder ot have the right size image
+             */
+            posterAdapterViewHolder.listItemNoImageImageView.setVisibility(View.GONE);
             posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.INVISIBLE);
+            posterAdapterViewHolder.listItemImageView.setVisibility(View.VISIBLE);
 
             Picasso.with(mContext)
-                    .load(currentMovie.getMoviePosterUrl().toString())
+                    .load(String.valueOf(NetworkUtils.getMovieImageUrl
+                            (Constants.IMAGE_SIZE_MEDIUM, currentMovie.getPosterImagePath())))
+                    .placeholder(R.drawable.ic_powered_by_rectangle_blue)
                     .into(posterAdapterViewHolder.listItemImageView);
         }
-        // Add the attribution logo to each view
-        posterAdapterViewHolder.tmdbLogoImageView.setImageResource(R.drawable.ic_stacked_green);
     }
 
     /**
@@ -167,16 +171,17 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     class PosterAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        // Holder to display a movie poster image
+        // Holder to display a movie poster
         ImageView listItemImageView;
+
+        // Holder to display a placeholder when an image is not available
+        ImageView listItemNoImageImageView;
 
         // Holder to display the movie title if no image is available
         TextView movieTitleTextView;
 
         // Holder to display 'No image available', if no movie poster is available
         TextView noPosterAvailableTextView;
-
-        ImageView tmdbLogoImageView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
@@ -191,15 +196,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
             // Get a reference to the views
             listItemImageView = itemView.findViewById(R.id.poster_iv);
-            movieTitleTextView = itemView.findViewById(R.id.movie_title_tv);
+            listItemNoImageImageView = itemView.findViewById(R.id.no_poster_available_iv);
+            movieTitleTextView = itemView.findViewById(R.id.movie_title_poster_tv);
             noPosterAvailableTextView = itemView.findViewById(R.id.no_poster_available_tv);
-            tmdbLogoImageView = itemView.findViewById(R.id.tmdb_logo);
 
             // Call setOnClickListener on the View passed into the constructor (use 'this' as the OnClickListener)
             itemView.setOnClickListener(this);
-
-            // Set minimum height
-            itemView.setMinimumHeight(parent.getMeasuredHeight() / 4);
         }
 
         /**
