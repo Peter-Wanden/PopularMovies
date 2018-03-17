@@ -125,7 +125,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
             Picasso.with(mContext)
                     .load(String.valueOf(NetworkUtils.getMovieImageUrl
                             (Constants.IMAGE_SIZE_MEDIUM, currentMovie.getPosterImagePath())))
-                    .placeholder(R.drawable.ic_powered_by_rectangle_blue)
+                    .placeholder(R.drawable.ic_powered_by_rectangle_blue).fit()
                     .into(posterAdapterViewHolder.listItemImageView);
         }
     }

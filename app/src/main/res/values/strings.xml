@@ -9,7 +9,7 @@
     <!-- Settings Menu Item [CHAR LIMIT=NONE] -->
     <string name="settings_menu_item">Settings</string>
 
-    <!-- Strings for Order-By preference [CHAR LIMIT=30] -->
+    <!-- Strings for Order-By preference settings[CHAR LIMIT=30] -->
     <string name="settings_order_by_label">Order By</string>
     <string name="settings_order_by_key" translatable="false">order_by</string>
     <!-- Default setting for Order-By preference -->
@@ -35,7 +35,7 @@
     <string name="movie_detail_description_movie_poster">A picture of the movies backdrop poster</string>
 
     <!-- User rating, year of release, certificate -->
-    <string name="movie_detail_vote_average_label">vote ave</string>
+    <string name="movie_detail_vote_average_label">voted</string>
     <string name="movie_detail_release_year_label">released</string>
 
     <!-- system string resources -->
