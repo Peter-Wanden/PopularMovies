@@ -1,5 +1,4 @@
 <resources>
-    <!-- TODO - Implement accessibility options -->
 
     <!-- Title for the application. [CHAR LIMIT=12] -->
     <string name="app_name">Popular Movies</string>
@@ -24,17 +23,22 @@
     <string name="settings_order_by_highest_rated_label">Highest Rated</string>
     <string name="settings_order_by_highest_rated_value" translatable="false">1</string>
 
-    <!-- Main Discovery Activity -->
+    <!-- Movie Discovery Activity -->
     <string name="title_movie_detail">Movie Details</string>
     <string name="no_poster">No movie poster available for this movie</string>
-    <!-- Accessability strings -->
+    <string name="movie_discovery_no_network">No network connection.</string>
+    <!-- Accessibility strings -->
     <string name="movie_discovery_image_of_movie_poster">Image of movie poster</string>
-    <string name="the_movie_database_logo">Image of the movie database logo</string>
 
     <!-- activity_movie_detail -->
-    <!-- Accessibility description strings -->
-    <string name="movie_detail_description_movie_poster">A picture of the movies poster</string>
-    <string name="api_key">api_key</string>
+    <!-- Accessibility strings -->
+    <string name="movie_detail_description_movie_poster">A picture of the movies backdrop poster</string>
 
+    <!-- User rating, year of release, certificate -->
+    <string name="movie_detail_vote_average_label">vote ave</string>
+    <string name="movie_detail_release_year_label">released</string>
+
+    <!-- system string resources -->
+    <string name="movie_discovery_no_movies">No movies of the type requested were found.</string>
 
 </resources>

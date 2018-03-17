@@ -2,39 +2,143 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimaryDarkBlue">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/movie_detail_trailer_thumbnail_iv"
+        <!-- ConstraintLayout for movie backdrop -->
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/movie_detail_description_movie_poster"
-            android:cropToPadding="false"
-            android:scaleType="centerCrop"
-            android:visibility="visible"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/sample_image_backdrop" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/movie_detail_title_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/movie_detail_trailer_thumbnail_iv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/movie_detail_trailer_thumbnail_iv"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Movie Title Goes Here" />
+            <!-- Movie backdrop -->
+            <ImageView
+                android:id="@+id/movie_detail_trailer_thumbnail_iv"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/movie_detail_description_movie_poster"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/sample_image_backdrop" />
 
-    </android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/movie_detail_poster_small_iv"
+                android:layout_width="145dp"
+                android:layout_height="200dp"
+                android:background="@drawable/rectangle_square_edge"
+                android:contentDescription="@string/movie_discovery_image_of_movie_poster"
+                android:cropToPadding="true"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="@+id/movie_detail_trailer_thumbnail_iv"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/movie_detail_vote_average_tv"
+                app:layout_constraintTop_toBottomOf="@+id/movie_detail_trailer_thumbnail_iv"
+                tools:srcCompat="@drawable/sample_discovery_image" />
+
+            <!-- Movie Title -->
+            <TextView
+                android:id="@+id/movie_detail_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-medium"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@+id/movie_detail_trailer_thumbnail_iv"
+                app:layout_constraintRight_toRightOf="@+id/movie_detail_trailer_thumbnail_iv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/movie_detail_trailer_thumbnail_iv"
+                tools:text="Movie Title Goes Here" />
+
+            <!-- Movie rating -->
+            <TextView
+                android:id="@+id/movie_detail_vote_average_tv"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/circle"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/movie_detail_poster_small_iv"
+                app:layout_constraintLeft_toRightOf="@+id/movie_detail_poster_small_iv"
+                app:layout_constraintRight_toLeftOf="@+id/movie_detail_release_year"
+                app:layout_constraintTop_toBottomOf="@+id/movie_detail_trailer_thumbnail_iv"
+                tools:text="7.5" />
+
+            <!-- Movie rating label -->
+            <TextView
+                android:id="@+id/movie_detail_label_vote_average"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/movie_detail_vote_average_label"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimaryDarkBlue"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="@+id/movie_detail_vote_average_tv"
+                app:layout_constraintRight_toRightOf="@id/movie_detail_vote_average_tv"
+                app:layout_constraintTop_toBottomOf="@+id/movie_detail_vote_average_tv" />
+
+            <!-- Year of release -->
+            <TextView
+                android:id="@+id/movie_detail_release_year"
+                android:layout_width="72dp"
+                android:layout_height="46dp"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/movie_detail_vote_average_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/movie_detail_vote_average_tv"
+                app:layout_constraintTop_toTopOf="@+id/movie_detail_vote_average_tv"
+                tools:text="1999" />
+
+            <!-- Year of release label -->
+            <TextView
+                android:id="@+id/movie_detail_release_year_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:text="@string/movie_detail_release_year_label"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimaryDarkBlue"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="@+id/movie_detail_release_year"
+                app:layout_constraintRight_toRightOf="@id/movie_detail_release_year"
+                app:layout_constraintTop_toBottomOf="@+id/movie_detail_release_year" />
+
+            <!-- Movie description -->
+            <TextView
+                android:id="@+id/movie_detail_description_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_detail_poster_small_iv"
+                tools:text="This is where a long description of the movie goes" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </layout>

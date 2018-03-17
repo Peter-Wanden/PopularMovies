@@ -8,8 +8,6 @@ import java.net.MalformedURLException;
  * Created by peter on 23/02/2018.
  * This class holds a movie object and implements parcelable so we can move instances of it
  * between classes and saved instance state.
- *
- * TODO - implement parcelable correctly
  * @link hhttps://plus.google.com/u/0/events/cfftk1qo4tjn7enecof6f9oes0o?authkey=CNu5uui-k5qAtQE
  *
  */
@@ -37,32 +35,38 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
     // The movies ID.
-    private int mId;
+    private final int mId;
     // Title of the movie.
-    private String mTitle;
+    private final String mTitle;
     // The movies original title.
-    private String mOriginalTitle;
+    private final String mOriginalTitle;
     // The movies poster image URL.
-    private String mImagePosterPath;
+    private final String mImagePosterPath;
     // The movies backdrop image URL.
-    private String mImageBackdropPath;
+    private final String mImageBackdropPath;
     // The movies synopsis.
-    private String mSynopsis;
+    private final String mSynopsis;
     // The movies user rating.
-    private int mUserRating;
+    private final double mUserRating;
     // The movies release date.
-    private String mMovieReleaseDate;
+    private final String mMovieReleaseDate;
 
     /**
-     * Constructor for a Movie object
-     * @param Id       The ID of the movie.
-     * @param title     The title of the movie.
-     * @param posterURL The endpoint of the poster location. This needs to be completed
-     *                  before it can point to the server.
+     * Constructor for a Movie object.
+     * @param Id                The ID of the movie.
+     * @param title             The title of the movie.
+     * @param originalTitle     The movies original title.
+     * @param posterURL         The endpoint of the poster location. This needs to be completed
+     *                          before it can point to the server.
+     * @param backDropUrl       The movies backdrop
+     * @param synopsis          The movies description
+     * @param userRating        A rating out of 10
+     * @param movieReleaseDate  The Year the movie was released
      */
     public Movie(int Id, String title, String originalTitle, String posterURL, String backDropUrl,
-                 String synopsis, int userRating, String movieReleaseDate) {
+                 String synopsis, double userRating, String movieReleaseDate) {
         mId = Id;
         mTitle = title;
         mOriginalTitle = originalTitle;
@@ -77,14 +81,14 @@ public class Movie implements Parcelable {
      * This constructor is usually private so that only the CREATOR can access it.
      */
     private Movie(Parcel in) throws MalformedURLException {
-        mId = in.readInt();
-        mTitle = in.readString();
-        mOriginalTitle = in.readString();
-        mImagePosterPath = in.readString();
-        mImageBackdropPath = in.readString();
-        mSynopsis = in.readString();
-        mUserRating = in.readInt();
-        mMovieReleaseDate = in.readString();
+        this.mId = in.readInt();
+        this.mTitle = in.readString();
+        this.mOriginalTitle = in.readString();
+        this.mImagePosterPath = in.readString();
+        this.mImageBackdropPath = in.readString();
+        this.mSynopsis = in.readString();
+        this.mUserRating = in.readDouble();
+        this.mMovieReleaseDate = in.readString();
     }
 
     /* Returns the movie's ID */
@@ -118,7 +122,7 @@ public class Movie implements Parcelable {
     }
 
     /* Returns the movies user rating */
-    public int getUserRating() {
+    public double getUserRating() {
         return mUserRating;
     }
 
@@ -142,7 +146,7 @@ public class Movie implements Parcelable {
         out.writeString(mImagePosterPath);
         out.writeString(mImageBackdropPath);
         out.writeString(mSynopsis);
-        out.writeInt(mUserRating);
+        out.writeDouble(mUserRating);
         out.writeString(mMovieReleaseDate);
     }
 }

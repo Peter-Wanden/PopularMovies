@@ -1,5 +1,7 @@
 package com.example.peter.popularmovies.app;
 
+import com.example.peter.popularmovies.BuildConfig;
+
 /**
  * Created by peter on 09/03/2018.
  * Contains the applications constant fields
@@ -7,21 +9,37 @@ package com.example.peter.popularmovies.app;
 
 public class Constants {
 
-    // Base URL for poster images
+    /* URL Elements */
+    public static final String BASE_SEARCH_URL = "https://api.themoviedb.org/3";
     public static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
+    public static final String API_KEY = "api_key";
+    public static final String API_KEY_VALUE = BuildConfig.API_KEY;
+    public static final String APPEND_TO_QUERY = "append_to_response";
+    public static final String LANGUAGE_US = "language=en-US";
+    public static final String IMAGE_LANGUAGE_ENGLISH = "include_image_language=en,null";
+    // Search types
+    public static final int MOST_POPULAR = 0;
+    public static final int HIGHEST_RATED = 1;
+    public static final int BY_MOVIE_ID = 2;
+    // Paths
+    public static final String PATH_DISCOVER = "discover";
+    public static final String PATH_MOVIE = "movie";
+    // Sort options
+    public static final String SORT_BY = "sort_by";
+    public static final String POPULARITY = "popular";
+    public static final String RATING = "top_rated";
 
+    /* Image elements */
     // Image sizes
     public static final String IMAGE_SIZE_SMALL = "w185";
     public static final String IMAGE_SIZE_MEDIUM = "w342";
     public static final String IMAGE_SIZE_LARGE = "w500";
     public static final String IMAGE_SIZE_XLARGE = "w780";
-
-
     // If no image is available
     public static final String NO_POSTER_AVAILABLE = "no_image_available";
     public static final String NO_BACKDROP_AVAILABLE = "no_backdrop_available";
 
-    /* JSON movie elements */
+    /* JSON elements */
     public static final String MOVIE_LIST = "results";
     public static final String MOVIE_ID = "id";
     public static final String MOVIE_TITLE = "title";

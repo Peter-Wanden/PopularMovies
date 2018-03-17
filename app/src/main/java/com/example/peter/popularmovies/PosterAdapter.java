@@ -18,9 +18,6 @@ import java.util.ArrayList;
  * Created by peter on 23/02/2018.
  * {@link PosterAdapter} exposes a list of Movie posters from an ArrayList
  * to an {@link android.support.v7.widget.RecyclerView}.
- *
- * TODO - when coming back to activity return to where you left on the list
- *
  */
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
@@ -121,7 +118,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
             /* If a valid movie poster URL endpoint is available:
              * - Display the movies poster in the current ViewHolder
-             * TODO - set the placeholder ot have the right size image
              */
             posterAdapterViewHolder.listItemNoImageImageView.setVisibility(View.GONE);
             posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.INVISIBLE);
@@ -160,7 +156,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * The interface that receives onClick messages.
      */
     public interface PosterAdapterOnClickHandler {
-        void onClick(Movie clickedMovie);
+        void onClick(Movie clickedMovie, int adapterPosition);
     }
 
     /**
@@ -212,7 +208,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             Movie currentMovie = mMovies.get(clickedPosition);
-            mClickHandler.onClick(currentMovie);
+            mClickHandler.onClick(currentMovie, getAdapterPosition());
         }
     }
 }

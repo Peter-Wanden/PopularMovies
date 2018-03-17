@@ -114,16 +114,25 @@ final class JsonUtils {
                         .optString(Constants.MOVIE_PLOT_SYNOPSIS, null);
 
                 // Extract the movies user rating
-                int userRating = currentMovie
-                        .optInt(Constants.MOVIE_USER_RATING, -1);
+                double userRating = currentMovie
+                        .optDouble(Constants.MOVIE_USER_RATING, -1);
 
                 // Extract the movie release date
-                String movieReleaseDate = currentMovie
+                String movieReleaseFullDate = currentMovie
                         .optString(Constants.MOVIE_RELEASE_DATE, null);
+
+                // Empty string for movie year
+                String movieReleaseYear = null;
+
+                // If a release date is present, extract the year
+                if (movieReleaseFullDate != null) {
+                    String movieReleaseDatePart[] = movieReleaseFullDate.split("-", 0);
+                    movieReleaseYear = movieReleaseDatePart[0];
+                }
 
                 // Create a new Movie object and pass in the required fields.
                 Movie movie = new Movie(movieId, movieTitle, movieOriginalTitle, imagePosterPath,
-                        imageBackdropPath, movieSynopsis, userRating, movieReleaseDate);
+                        imageBackdropPath, movieSynopsis, userRating, movieReleaseYear);
 
                 // Add the new movie to the list of movies.
                 movies.add(movie);

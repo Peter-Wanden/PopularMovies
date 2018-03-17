@@ -5,11 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
-
-import com.example.peter.popularmovies.BuildConfig;
 import com.example.peter.popularmovies.MovieDiscovery;
 import com.example.peter.popularmovies.app.Constants;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -20,62 +17,14 @@ import java.util.Scanner;
 /**
  * Created by peter on 24/02/2018.
  * This class constructs a URL and then queries 'The Movie Database' API.
- * Each URL returns a list of either the most popular or highest rated movies.
- * If available, each result is accompanied by an image URL pointing to its corresponding
- * movie poster.
- *
- * TODO - Limit the search results to a reasonable amount.
- * TODO - Display a message if there is no results.
- * TODO - Display a message if there is no network connection.
- *
+ * Each URL returns a list of either the most popular or highest rated movies with extras if
+ * requested.
  */
 
 public final class NetworkUtils {
 
-    /* URL search type for most popular */
-    public static final int MOST_POPULAR = 0;
-
-    /* URL search type for highest rated */
-    public static final int HIGHEST_RATED = 1;
-
     /* Log tag for this class */
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
-
-    /* API key Key pair identifier. */
-    private static final String API_KEY = "api_key";
-
-    /* API Key */
-    private static final String API_KEY_VALUE = BuildConfig.API_KEY;
-
-    /* Base URL for a search. */
-    private static final String BASE_SEARCH_URL = "https://api.themoviedb.org/3";
-
-    /* There are three ways (paths) to search and find what you want on TMDB.
-        /search   - a text based search
-        /discover - search based on filters or definable values like ratings, certifications
-                    or release dates.
-        /find     - using external id's such as using the IMDB ID of a movie
-
-        For this application we only need to use the discover path
-    */
-    private static final String PATH_DISCOVER = "discover";
-
-    /* There are two further paths in under discover.
-        /movie  - for movie information
-        /tv     - for TV information
-
-        For this application we only need the path to movies
-     */
-    private static final String PATH_MOVIE = "movie";
-
-    /* Tells the API that we would like to sort the results */
-    private static final String SORT_BY = "sort_by";
-
-    /* Sort criteria for most popular */
-    private static final String POPULARITY = "POPULARITY.desc";
-
-    /* Sort criteria for highest rated */
-    private static final String RATING = "vote_average.desc";
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils}
@@ -115,29 +64,29 @@ public final class NetworkUtils {
      */
     public static URL getMovieSearchUrl(int searchType) {
 
-        Uri.Builder searchUri = Uri.parse(BASE_SEARCH_URL).buildUpon()
-                .appendPath(PATH_DISCOVER)
-                .appendPath(PATH_MOVIE);
+        Uri.Builder searchUri = Uri.parse(Constants.BASE_SEARCH_URL).buildUpon()
+                // .appendPath(Constants.PATH_DISCOVER)
+                .appendPath(Constants.PATH_MOVIE);
 
         switch (searchType) {
-            case MOST_POPULAR:
-                searchUri.appendQueryParameter(SORT_BY, POPULARITY);
+            case Constants.MOST_POPULAR:
+                searchUri.appendPath(Constants.POPULARITY);
                 break;
 
-            case HIGHEST_RATED:
-                searchUri.appendQueryParameter(SORT_BY, RATING);
+            case Constants.HIGHEST_RATED:
+                searchUri.appendPath(Constants.RATING);
                 break;
 
             default:
-                // An incorrect argument should not crash the app. Instead return MOST_POPULAR
-                searchUri.appendQueryParameter(SORT_BY, POPULARITY);
+                // An incorrect argument should not crash the app. Instead return most popular
+                searchUri.appendPath(Constants.POPULARITY);
                 // Log the error
                 Log.e(LOG_TAG, "Search criteria not supported for search type: "
                         + searchType);
         }
 
         // Append the API key, and return the completed search URL as a String.
-        searchUri.appendQueryParameter(API_KEY, API_KEY_VALUE).build();
+        searchUri.appendQueryParameter(Constants.API_KEY, Constants.API_KEY_VALUE).build();
 
         try {
             URL url = new URL(searchUri.toString());
@@ -160,7 +109,6 @@ public final class NetworkUtils {
      */
     public static URL getMovieImageUrl(String imageType, String imagePath) {
 
-        //TODO Convert to switch statement if possible
         // Build the base Uri
         Uri.Builder getImageUrl = Uri.parse(Constants.BASE_IMAGE_URL).buildUpon();
 
@@ -187,7 +135,6 @@ public final class NetworkUtils {
 
         // Return the Url
         try {
-            Log.e(LOG_TAG, "Movie image URL: " + getImageUrl.toString());
             return new URL(getImageUrl.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
