@@ -21,12 +21,7 @@ public class Movie implements Parcelable {
          */
         @Override
         public Movie createFromParcel(Parcel in) {
-            try {
                 return new Movie(in);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            return null;
         }
 
         /* Can pass an array of this class */
@@ -80,7 +75,7 @@ public class Movie implements Parcelable {
     /* This is where we retrieve the values that were originally written to the parcel.
      * This constructor is usually private so that only the CREATOR can access it.
      */
-    private Movie(Parcel in) throws MalformedURLException {
+    private Movie(Parcel in) {
         this.mId = in.readInt();
         this.mTitle = in.readString();
         this.mOriginalTitle = in.readString();

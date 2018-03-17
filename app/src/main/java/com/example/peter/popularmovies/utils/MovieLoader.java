@@ -17,7 +17,7 @@ import android.util.Log;
 
 public class MovieLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
-    private int mMovieSearchType;
+    private final int mMovieSearchType;
 
     /**
      * Constructs a new {@link MovieLoader} that returns a list of movies.

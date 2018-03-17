@@ -36,7 +36,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     final private PosterAdapterOnClickHandler mClickHandler;
 
     /* Instantiate an ArrayList of Movies as the data source */
-    private ArrayList<Movie> mMovies;
+    private final ArrayList<Movie> mMovies;
 
     /**
      * Constructor for PosterAdapter that accepts a number of items to display and the specification
@@ -170,16 +170,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
             implements View.OnClickListener {
 
         // Holder to display a movie poster
-        ImageView listItemImageView;
+        final ImageView listItemImageView;
 
         // Holder to display a placeholder when an image is not available
-        ImageView listItemNoImageImageView;
+        final ImageView listItemNoImageImageView;
 
         // Holder to display the movie title if no image is available
-        TextView movieTitleTextView;
+        final TextView movieTitleTextView;
 
         // Holder to display 'No image available', if no movie poster is available
-        TextView noPosterAvailableTextView;
+        final TextView noPosterAvailableTextView;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our
