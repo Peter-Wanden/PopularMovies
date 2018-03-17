@@ -14,18 +14,10 @@ public class Constants {
     public static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p";
     public static final String API_KEY = "api_key";
     public static final String API_KEY_VALUE = BuildConfig.API_KEY;
-    public static final String APPEND_TO_QUERY = "append_to_response";
-    public static final String LANGUAGE_US = "language=en-US";
-    public static final String IMAGE_LANGUAGE_ENGLISH = "include_image_language=en,null";
     // Search types
     public static final int MOST_POPULAR = 0;
     public static final int HIGHEST_RATED = 1;
-    public static final int BY_MOVIE_ID = 2;
-    // Paths
-    public static final String PATH_DISCOVER = "discover";
     public static final String PATH_MOVIE = "movie";
-    // Sort options
-    public static final String SORT_BY = "sort_by";
     public static final String POPULARITY = "popular";
     public static final String RATING = "top_rated";
 

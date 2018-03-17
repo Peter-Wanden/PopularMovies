@@ -23,9 +23,6 @@ import java.util.ArrayList;
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
 
-    /* Log tag for this class */
-    private static final String LOG_TAG = PosterAdapter.class.getSimpleName();
-
     /* The context we use to reach utility methods, app resources and layout inflaters */
     private final Context mContext;
 

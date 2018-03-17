@@ -2,7 +2,6 @@ package com.example.peter.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import java.net.MalformedURLException;
 
 /**
  * Created by peter on 23/02/2018.
@@ -84,11 +83,6 @@ public class Movie implements Parcelable {
         this.mSynopsis = in.readString();
         this.mUserRating = in.readDouble();
         this.mMovieReleaseDate = in.readString();
-    }
-
-    /* Returns the movie's ID */
-    public int getMovieId() {
-        return mId;
     }
 
     /* Returns the movie title */

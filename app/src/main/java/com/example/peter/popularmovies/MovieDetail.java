@@ -3,8 +3,6 @@ package com.example.peter.popularmovies;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-
 import com.example.peter.popularmovies.app.Constants;
 import com.example.peter.popularmovies.databinding.ActivityMovieDetailBinding;
 import com.example.peter.popularmovies.model.Movie;
@@ -20,9 +18,6 @@ import java.net.URL;
 
 public class MovieDetail extends AppCompatActivity {
 
-    // Log tag for this class
-    private static final String LOG_TAG = MovieDetail.class.getSimpleName();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,17 +30,33 @@ public class MovieDetail extends AppCompatActivity {
         Movie selectedMovie = getIntent().getParcelableExtra("selected_movie");
 
         // Load the backdrop
-        Picasso.with(this)
-                .load(NetworkUtils.getMovieImageUrl(Constants.IMAGE_SIZE_XLARGE,
-                        selectedMovie.getPosterImagePath()).toString())
-                .into(detailBinding.movieDetailTrailerThumbnailIv);
-        Picasso.with(this)
-                .load(NetworkUtils.getMovieImageUrl(Constants.IMAGE_SIZE_SMALL,
-                        selectedMovie.getPosterImagePath()).toString())
-                .into(detailBinding.movieDetailPosterSmallIv);
+        if (selectedMovie.getBackdropImagePath() != null) {
+            URL backdropUrl = NetworkUtils.getMovieImageUrl(Constants
+                    .IMAGE_SIZE_XLARGE, selectedMovie.getBackdropImagePath());
+            if (backdropUrl != null) {
+                String backDrop = backdropUrl.toString();
+                // Load the backdrop.
+                Picasso.with(this)
+                        .load(backDrop)
+                        .into(detailBinding.movieDetailTrailerThumbnailIv);
+            }
+        }
+
+        // Load the poster
+        if (selectedMovie.getPosterImagePath() != null) {
+            URL posterUrl = NetworkUtils.getMovieImageUrl(Constants
+                    .IMAGE_SIZE_SMALL, selectedMovie.getPosterImagePath());
+            if (posterUrl != null) {
+                String poster = posterUrl.toString();
+                // Load the poster.
+                Picasso.with(this)
+                        .load(poster)
+                        .into(detailBinding.movieDetailPosterSmallIv);
+            }
+        }
 
         // Set the title
-        detailBinding.movieDetailTitleTv.setText(selectedMovie.getTitle());
+        detailBinding.movieDetailTitleTv.setText(selectedMovie.getOriginalTitle());
 
         // Set the rating
         detailBinding.movieDetailVoteAverageTv.setText(String.valueOf(selectedMovie.getUserRating()));
@@ -56,6 +67,5 @@ public class MovieDetail extends AppCompatActivity {
         // Set the synopsis
         detailBinding.movieDetailDescriptionTv.setText(selectedMovie.getMovieSynopsis());
 
-        setTitle(selectedMovie.getTitle());
     }
 }

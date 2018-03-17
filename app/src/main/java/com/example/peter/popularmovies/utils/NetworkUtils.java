@@ -65,7 +65,6 @@ public final class NetworkUtils {
     public static URL getMovieSearchUrl(int searchType) {
 
         Uri.Builder searchUri = Uri.parse(Constants.BASE_SEARCH_URL).buildUpon()
-                // .appendPath(Constants.PATH_DISCOVER)
                 .appendPath(Constants.PATH_MOVIE);
 
         switch (searchType) {

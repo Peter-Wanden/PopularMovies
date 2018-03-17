@@ -1,13 +1,9 @@
 package com.example.peter.popularmovies.utils;
 
 import com.example.peter.popularmovies.model.Movie;
-
 import java.util.ArrayList;
-
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
 /**
  * Created by peter on 28/02/2018.

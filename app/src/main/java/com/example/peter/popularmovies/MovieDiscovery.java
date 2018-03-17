@@ -25,14 +25,8 @@ public class MovieDiscovery extends AppCompatActivity implements
         PosterAdapter.PosterAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    // Log tag for this class
-    private static final String LOG_TAG = MovieDiscovery.class.getSimpleName();
-
     // Loader id
     private static final int POSTER_LOADER_ID = 100;
-
-    // Recycler instance
-    private RecyclerView mRecyclerView;
 
     // Adapter instance
     private PosterAdapter mPosterAdapter;
@@ -52,7 +46,7 @@ public class MovieDiscovery extends AppCompatActivity implements
         loadingIndicator = findViewById(R.id.loading_indicator);
 
         /* Get a reference to the recycler view */
-        mRecyclerView = findViewById(R.id.posters_rv);
+        RecyclerView mRecyclerView = findViewById(R.id.posters_rv);
         /* Get a reference to the empty view */
         mEmptyStateTextView = findViewById(R.id.empty_view);
 
