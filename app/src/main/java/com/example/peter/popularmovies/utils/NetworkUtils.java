@@ -29,7 +29,7 @@ public final class NetworkUtils {
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils}
      * object. This class is only meant to hold static variables and methods, which can be accessed
-     * directly from the class name TmdbApiUtils (an object instance of QueryUtils is not needed).
+     * directly from the class name tMDBApiUtils (an object instance of QueryUtils is not needed).
      */
     private NetworkUtils() {
     }

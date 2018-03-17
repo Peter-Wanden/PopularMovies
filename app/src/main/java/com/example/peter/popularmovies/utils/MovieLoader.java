@@ -22,7 +22,7 @@ public class MovieLoader extends AsyncTaskLoader<ArrayList<Movie>> {
     /**
      * Constructs a new {@link MovieLoader} that returns a list of movies.
      *
-     * @param context
+     * @param context - of the activity
      * @param movieSearchType - The type of search requested.
      */
     public MovieLoader(Context context, int movieSearchType) {

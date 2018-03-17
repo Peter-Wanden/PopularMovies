@@ -1,6 +1,7 @@
 package com.example.peter.popularmovies;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,8 +64,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      *                  for more details.
      * @return A new PosterAdapterViewHolder that holds the fragment View for each list item
      */
+    @NonNull
     @Override
-    public PosterAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public PosterAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
         int layoutIdForListItem = R.layout.poster_item_view;
         View view = LayoutInflater
@@ -73,7 +75,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         view.setFocusable(true);
 
-        return new PosterAdapterViewHolder(viewGroup, view);
+        return new PosterAdapterViewHolder(view);
     }
 
     /**
@@ -87,7 +89,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(PosterAdapterViewHolder posterAdapterViewHolder, int position) {
+    public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterAdapterViewHolder, int position) {
 
         // Get the current Movie object
         Movie currentMovie = mMovies.get(position);
@@ -106,7 +108,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
             posterAdapterViewHolder.noPosterAvailableTextView.setVisibility(View.VISIBLE);
             posterAdapterViewHolder.listItemNoImageImageView.setVisibility(View.VISIBLE);
 
-            // Set the image to be a tmdb logo
+            // Set the image to be a tMDB logo
             posterAdapterViewHolder.listItemNoImageImageView
                     .setImageDrawable(mContext.getResources()
                             .getDrawable(R.drawable.ic_powered_by_rectangle_green));
@@ -187,7 +189,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
          * @param itemView The View that you inflated in
          *                 {@link PosterAdapter#onCreateViewHolder(ViewGroup, int)}
          */
-        PosterAdapterViewHolder(ViewGroup parent, View itemView) {
+        PosterAdapterViewHolder(View itemView) {
             super(itemView);
 
             // Get a reference to the views
